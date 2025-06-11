@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Розклад</title>
   <link type="text/css" rel="stylesheet" href="sheet.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <style>
     @font-face {
   font-family: 'PP Pangram Sans';
@@ -91,12 +91,31 @@ body {
     .ritz .waffle th.row-headers-background {
   display: none;
 }
-    .ritz .waffle {
+   html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  overflow-x: hidden;
+}
+
+.ritz.grid-container {
   width: 100vw;
   max-width: 100vw;
+  padding: 0;
+  margin: 0 auto;
+  overflow-x: auto; /* для прокрутки */
+  box-sizing: border-box;
+}
+
+.ritz .waffle {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100vw;
+  border-collapse: collapse;
   box-sizing: border-box;
   overflow-x: auto;
   display: block;
+  white-space: nowrap; /* не переносити вміст всередині таблиці */
 }
   </style>
 </head>
