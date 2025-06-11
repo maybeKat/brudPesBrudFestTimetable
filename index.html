@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Розклад Фестивалю</title>
   <style>
     @font-face {
@@ -16,58 +16,97 @@
       font-weight: 700;
     }
 
+    /* Фонове зображення на body */
     body {
       font-family: 'PP Pangram Sans', sans-serif;
-      background-color: #111;
-      color: #ffa500;
+      margin: 0;
+      padding: 0;
+      background: 
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        url('images/festival-photo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
       text-align: center;
-      padding-top: 100px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
     }
 
+    /* Червоний контрастний блок для заголовка */
     h1 {
+      background-color: #b30000;
+      color: #fff;
       font-weight: 700;
       font-size: 2.5em;
-      margin-bottom: 50px;
+      padding: 20px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
+      margin-bottom: 40px;
+      max-width: 90%;
     }
 
+    /* Контейнер для кнопок з червоним фоном */
+    .button-container {
+      background-color: #b30000;
+      border-radius: 12px;
+      padding: 20px 40px;
+      box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Стиль кнопок */
     .button {
       font-weight: 700;
-      display: inline-block;
-      margin: 20px;
-      padding: 20px 40px;
+      padding: 15px 35px;
       font-size: 1.5em;
-      color: #111;
-      background-color: #ffa500;
-      border: none;
+      color: #fff;
+      background-color: transparent;
+      border: 2px solid #fff;
       border-radius: 12px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
       text-decoration: none;
-    }
-    .button:hover {
-      background-color: #ffcc00;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      flex-grow: 1;
+      max-width: 200px;
     }
 
-    /* Стиль для картинки з закругленими краями */
-    .rounded-image {
-      border-radius: 15px;
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto 40px auto; /* центруємо та додаємо відступ знизу */
-      box-shadow: 0 4px 10px rgba(255, 165, 0, 0.4); /* легка тінь, щоб картинка гарніше виглядала */
+    .button:hover {
+      background-color: #fff;
+      color: #b30000;
+    }
+
+    /* Адаптивність */
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8em;
+        padding: 15px 25px;
+      }
+      .button-container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 15px 20px;
+      }
+      .button {
+        max-width: 100%;
+        font-size: 1.3em;
+      }
     }
   </style>
 </head>
 <body>
   <h1>Розклад фестивалю</h1>
 
- 
-
-  <a href="день1.html" class="button">День 1</a>
-  <a href="день2.html" class="button">День 2</a>
-
-   <!-- Приклад картинки з закругленими краями -->
-  <img src="festival-photo.jpg" alt="Фото фестивалю" class="rounded-image" />
+  <div class="button-container">
+    <a href="день1.html" class="button">День 1</a>
+    <a href="день2.html" class="button">День 2</a>
+  </div>
 </body>
 </html>
