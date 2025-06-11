@@ -16,7 +16,6 @@
       font-weight: 700;
     }
 
-    /* Фонове зображення на body */
     body {
       font-family: 'PP Pangram Sans', sans-serif;
       margin: 0;
@@ -26,56 +25,59 @@
         url('festival-photo.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
-      text-align: center;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
+      justify-content: flex-start; /* зверху, потім відступ вниз */
       align-items: center;
-      padding: 50px 20px;
+      flex-direction: column;
+      padding-top: 25vh; /* приблизно посередині екрану по вертикалі */
+      padding-left: 20px;
+      padding-right: 20px;
+      text-align: center;
     }
 
-    /* Червоний контрастний блок для заголовка */
     h1 {
       background-color: #b30000;
       color: #fff;
       font-weight: 700;
-      font-size: 2.5em;
-      padding: 20px 40px;
-      border-radius: 12px;
+      font-size: 2em;
+      padding: 15px 30px;
+      border-radius: 10px;
       box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       max-width: 90%;
+      display: inline-block;
     }
 
-    /* Контейнер для кнопок з червоним фоном */
     .button-container {
       background-color: #b30000;
-      border-radius: 12px;
-      padding: 20px 40px;
+      border-radius: 10px;
+      padding: 15px 30px;
       box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
       display: flex;
-      gap: 30px;
+      gap: 25px;
       justify-content: center;
       flex-wrap: wrap;
-      max-width: 600px;
+      max-width: 500px;
       width: 100%;
       margin: 0 auto;
+      display: inline-flex;
     }
 
-    /* Стиль кнопок */
     .button {
       font-weight: 700;
-      padding: 15px 35px;
-      font-size: 1.5em;
+      padding: 12px 30px;
+      font-size: 1.3em;
       color: #fff;
       background-color: transparent;
       border: 2px solid #fff;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       text-decoration: none;
       transition: background-color 0.3s ease, color 0.3s ease;
       flex-grow: 1;
-      max-width: 200px;
+      max-width: 180px;
+      text-align: center;
     }
 
     .button:hover {
@@ -83,20 +85,20 @@
       color: #b30000;
     }
 
-    /* Адаптивність */
     @media (max-width: 480px) {
       h1 {
-        font-size: 1.8em;
-        padding: 15px 25px;
+        font-size: 1.6em;
+        padding: 12px 20px;
       }
       .button-container {
         flex-direction: column;
-        gap: 20px;
-        padding: 15px 20px;
+        gap: 15px;
+        padding: 12px 20px;
+        max-width: 100%;
       }
       .button {
         max-width: 100%;
-        font-size: 1.3em;
+        font-size: 1.2em;
       }
     }
   </style>
