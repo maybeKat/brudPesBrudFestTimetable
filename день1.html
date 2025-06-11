@@ -91,31 +91,36 @@ body {
     .ritz .waffle th.row-headers-background {
   display: none;
 }
-   html, body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  overflow-x: hidden;
-}
+     html, body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      overflow-x: hidden;
+    }
 
-.ritz.grid-container {
-  width: 100vw;
-  max-width: 100vw;
-  padding: 0;
-  margin: 0 auto;
-  overflow-x: auto; /* для прокрутки */
-  box-sizing: border-box;
-}
+    .ritz.grid-container {
+      width: 100vw;
+      max-width: 100vw;
+      padding: 0;
+      margin: 0 auto;
+      overflow-x: auto;
+      box-sizing: border-box;
+    }
 
-.ritz .waffle {
-  width: 100%;
-  min-width: 100%;
-  max-width: 100vw;
-  border-collapse: collapse;
-  box-sizing: border-box;
-  overflow-x: auto;
-  display: block;
-  white-space: nowrap; /* не переносити вміст всередині таблиці */
+    .ritz .waffle {
+      width: 100%;
+      min-width: 100%;
+      max-width: 100vw;
+      border-collapse: collapse;
+      box-sizing: border-box;
+      overflow-x: auto;
+      display: block;
+      white-space: nowrap;
+    }
+
+    .ritz .waffle td, .ritz .waffle th {
+      min-width: 80px;
+    }
 }
   </style>
 </head>
