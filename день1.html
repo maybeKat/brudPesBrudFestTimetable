@@ -59,9 +59,10 @@ html, body {
   padding: 6px;
   text-align: center;
   vertical-align: middle;
-  white-space: nowrap; /* заборона переносу */
+  white-space: normal;        /* дозволяємо перенос по пробілу */
+  word-break: normal;         /* переносити по пробілах */
+  overflow-wrap: break-word;  /* переносити довгі слова */
   max-width: none;
-}
 
 /* Приховуємо нумерацію рядків */
 .ritz .waffle th.row-headers-background
