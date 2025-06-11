@@ -5,71 +5,77 @@
   <title>Розклад</title>
   <link type="text/css" rel="stylesheet" href="sheet.css">
  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <style>
+ <style>
   @font-face {
-  font-family: 'PP Pangram Sans';
-  src: url('PPPangramSans-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-}
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: 'PP Pangram Sans';
-  src: url('PPPangramSans-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+  }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-color: #000000; /* чорний фон */
-  color: orange;
-  font-family: 'PP Pangram Sans', Arial, sans-serif;
-  overflow-x: hidden; /* щоб не було скролу по всьому body */
-  overflow-y: hidden;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000000; /* чорний фон */
+    color: orange;
+    font-family: 'PP Pangram Sans', Arial, sans-serif;
+    overflow-x: hidden; /* щоб не було горизонтального скролу по body */
+    overflow-y: hidden; /* щоб не було вертикального скролу по body */
+  }
 
-.ritz.grid-container {
-  height: 100vh;
-  max-width: 100vw;
-  margin: 0 auto;
-  padding: 10px;
-  box-sizing: border-box;
-  overflow-y: auto; /* вертикальний скрол, якщо треба */
-}
+  .ritz.grid-container {
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto; /* вертикальний скрол для контейнера */
+  }
 
-.ritz .waffle-container {
-  overflow-x: auto; /* дозволяємо горизонтальний скрол для таблиці */
-  -webkit-overflow-scrolling: touch; /* плавний скрол на iOS */
-  width: 100%;
-}
+  .ritz .waffle-container {
+    overflow-x: auto; /* горизонтальний скрол для таблиці */
+    -webkit-overflow-scrolling: touch; /* плавний скрол на iOS */
+    width: 100%;
+  }
 
-.ritz .waffle {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: auto; /* авто ширина колонок */
-  white-space: nowrap; /* не переносити текст у клітинках */
-}
+  .ritz .waffle {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto; /* ширина колонок під вміст */
+    white-space: normal; /* дозволити перенос рядків */
+  }
 
-.ritz .waffle th,
-.ritz .waffle td {
-  border: 1px solid orange;
-  padding: 6px;
-  text-align: center;
-  vertical-align: middle;
-  white-space: normal;        /* дозволяємо перенос по пробілу */
-  word-break: normal;         /* переносити по пробілах */
-  overflow-wrap: break-word;  /* переносити довгі слова */
-  max-width: none;
-}
-/* Приховуємо нумерацію рядків */
-.ritz .waffle th.row-headers-background
-  </style>
+  /* Приховуємо колонку з номерами рядків */
+  .ritz .waffle th.row-headers-background,
+  .ritz .waffle td.row-headers-background {
+    display: none;
+  }
+
+  .ritz .waffle th,
+  .ritz .waffle td {
+    border: 1px solid orange;
+    padding: 6px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;          /* перенос по пробілах */
+    word-break: normal;           /* перенос по словах */
+    overflow-wrap: break-word;    /* перенос довгих слів */
+    max-width: none;
+  }
+</style>
+
 </head>
 <body>
   <div class="ritz grid-container" dir="ltr">
+    <div class="waffle-container">
      <table class="waffle" cellspacing="0" cellpadding="0">
         <tbody>
             <tr style="height: 55px">
@@ -230,6 +236,7 @@ html, body {
         </tbody>
     </table>
   </div>
+    </div>
 
   <script>
   function clearHighlights() {
