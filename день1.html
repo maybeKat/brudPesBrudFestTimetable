@@ -27,7 +27,7 @@ html, body {
   background-color: #000; /* чорний фон */
   color: orange;
   font-family: 'PP Pangram Sans', Arial, sans-serif;
-  overflow-x: hidden;
+  overflow-x: hidden; /* щоб не було скролу по всьому body */
   overflow-y: hidden;
 }
 
@@ -37,14 +37,20 @@ html, body {
   margin: 0 auto;
   padding: 10px;
   box-sizing: border-box;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow-y: auto; /* вертикальний скрол, якщо треба */
+}
+
+.ritz .waffle-container {
+  overflow-x: auto; /* дозволяємо горизонтальний скрол для таблиці */
+  -webkit-overflow-scrolling: touch; /* плавний скрол на iOS */
+  width: 100%;
 }
 
 .ritz .waffle {
-  width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  width: 100%;
+  table-layout: auto; /* авто ширина колонок */
+  white-space: nowrap; /* не переносити текст у клітинках */
 }
 
 .ritz .waffle th,
@@ -53,56 +59,12 @@ html, body {
   padding: 6px;
   text-align: center;
   vertical-align: middle;
-  white-space: normal;           /* Дозволяє перенос рядків */
-  word-break: normal;            /* Звичайний перенос, без агресивного розриву */
-  overflow-wrap: break-word;    /* Перенос довгих слів */
-  hyphens: auto;                 /* Автоматичний перенос слів */
-  max-width: 1px;                /* Щоб обмежити ширину і змусити перенос */
+  white-space: nowrap; /* заборона переносу */
+  max-width: none;
 }
 
 /* Приховуємо нумерацію рядків */
-.ritz .waffle th.row-headers-background {
-  display: none;
-}
-
-/* Стилі для різних категорій */
-.s0, .s1, .column-headers-background, .row-headers-background {
-  font-weight: 700;
-}
-
-.s2, .s3, .s4 {
-  font-weight: 600;
-}
-
-.ritz .waffle .s0 {
-  font-weight: bold;
-  font-size: 13pt;
-}
-
-.ritz .waffle .s1 {
-  font-weight: bold;
-  font-size: 10pt;
-  text-align: right;
-  cursor: pointer;
-}
-
-.ritz .waffle .s3,
-.ritz .waffle .s4 {
-  font-size: 10pt;
-  text-align: left;
-}
-
-.column-headers-background,
-.row-headers-background {
-  background-color: #111 !important;
-  color: orange !important;
-  font-weight: bold;
-}
-
-.highlight {
-  background-color: orange !important;
-  color: black !important;
-}
+.ritz .waffle th.row-headers-background
   </style>
 </head>
 <body>
