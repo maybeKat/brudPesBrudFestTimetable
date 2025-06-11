@@ -3,98 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <title>Розклад</title>
-  <link type="text/css" rel="stylesheet" href="sheet.css">
-    <style>
-    @font-face {
-  font-family: 'PP Pangram Sans';
-  src: url('PPPangramSans-Semibold.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
+<!--   <link type="text/css" rel="stylesheet" href="sheet.css"> -->
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+ <style>
+   .highlight {
+  background-color: rgba(255, 165, 0, 0.3); /* легкий помаранчевий фон */
+  transition: background-color 0.3s ease;
 }
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+  }
 
-@font-face {
-  font-family: 'PP Pangram Sans';
-  src: url('PPPangramSans-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-}
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+  }
 
-body {
-  background-color: #000;
-  color: orange;
-  font-family: 'PP Pangram Sans', Arial, sans-serif;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000000; /* чорний фон */
+    color: orange;
+    font-family: 'PP Pangram Sans', Arial, sans-serif;
+    overflow-x: hidden; /* щоб не було горизонтального скролу по body */
+    overflow-y: hidden; /* щоб не було вертикального скролу по body */
+  }
 
+  .ritz.grid-container {
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto; /* вертикальний скрол для контейнера */
+  }
 
-/* Сценарії: час і назви сцен */
-.s0, .s1, .column-headers-background, .row-headers-background {
-  font-weight: 700;
-}
+  .ritz .waffle-container {
+    overflow-x: auto; /* горизонтальний скрол для таблиці */
+    -webkit-overflow-scrolling: touch; /* плавний скрол на iOS */
+    width: 100%;
+  }
 
-/* Артисти */
-.s2, .s3, .s4 {
-  font-weight: 600;
-}
+  .ritz .waffle {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto; /* ширина колонок під вміст */
+    white-space: normal; /* дозволити перенос рядків */
+  }
 
-    .ritz .waffle {
-      border-collapse: collapse;
-      width: 100%;
-    }
+  /* Приховуємо колонку з номерами рядків */
+  .ritz .waffle th.row-headers-background,
+  .ritz .waffle td.row-headers-background {
+    display: none;
+  }
 
-    .ritz .waffle th,
-    .ritz .waffle td {
-      border: 1px solid orange;
-      padding: 6px;
-      text-align: center;
-      vertical-align: middle;
-    }
+  .ritz .waffle th,
+  .ritz .waffle td {
+    border: 1px solid orange;
+    padding: 6px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;          /* перенос по пробілах */
+    word-break: normal;           /* перенос по словах */
+    overflow-wrap: break-word;    /* перенос довгих слів */
+    max-width: none;
+  }
+</style>
 
-    .ritz .waffle .s0,
-    .ritz .waffle .s1,
-    .ritz .waffle .s2,
-    .ritz .waffle .s3,
-    .ritz .waffle .s4 {
-      background-color: #111;
-      color: orange;
-    }
-
-    .ritz .waffle .s0 {
-      font-weight: bold;
-      font-size: 13pt;
-    }
-
-    .ritz .waffle .s1 {
-      font-weight: bold;
-      font-size: 10pt;
-      text-align: right;
-      cursor: pointer;
-    }
-
-    .ritz .waffle .s3,
-    .ritz .waffle .s4 {
-      font-size: 10pt;
-      text-align: left;
-    }
-
-    .column-headers-background,
-    .row-headers-background {
-      background-color: #111 !important;
-      color: orange !important;
-      font-weight: bold;
-    }
-
-    .highlight {
-      background-color: orange !important;
-      color: black !important;
-    }
-      .ritz .waffle th.row-headers-background {
-  display: none;
-}
-  </style>
 </head>
 <body>
   <div class="ritz grid-container" dir="ltr">
-        <table class="waffle" cellspacing="0" cellpadding="0">
+    <div class="waffle-container">
+     <table class="waffle" cellspacing="0" cellpadding="0">
         <tbody>
             <tr style="height: 55px">
                 <th id="138073132R0" style="height: 55px;" class="row-headers-background">
@@ -253,46 +239,55 @@ body {
         </tbody>
     </table>
   </div>
+    </div>
 
   <script>
-  function clearHighlights() {
-    document.querySelectorAll('.waffle td, .waffle th').forEach(td => {
-      td.classList.remove('highlight');
-    });
-  }
+// JS скрипт підсвічування
+function clearHighlights() {
+  document.querySelectorAll('.waffle td.highlight, .waffle th.highlight').forEach(cell => {
+    cell.classList.remove('highlight');
+  });
+}
 
-  function highlightTimeRow(clickedCell) {
-    const table = document.querySelector('.waffle');
-    const rows = Array.from(table.rows);
-    const rowIndex = rows.indexOf(clickedCell.parentElement);
+function highlightTimeRow(clickedCell) {
+  const table = document.querySelector('.waffle');
+  const rows = Array.from(table.rows);
+  const rowIndex = rows.indexOf(clickedCell.parentElement);
 
-    // 1. Підсвічуємо сам рядок
-    rows[rowIndex].querySelectorAll('td, th').forEach(td => td.classList.add('highlight'));
+  // Підсвічуємо видимі клітинки поточного рядка
+  rows[rowIndex].querySelectorAll('td, th').forEach(cell => {
+    if (getComputedStyle(cell).display !== 'none') {
+      cell.classList.add('highlight');
+    }
+  });
 
-    // 2. Шукаємо всі клітинки, які мають rowspan і перекривають цей час
-    rows.forEach((row, rIdx) => {
-      Array.from(row.cells).forEach(cell => {
-        const rs = parseInt(cell.getAttribute('rowspan') || '1');
-        if (rs > 1) {
-          const start = rIdx;
-          const end = rIdx + rs - 1;
-          if (rowIndex >= start && rowIndex <= end) {
+  // Підсвічуємо клітинки з rowspan, що охоплюють цей рядок
+  rows.forEach((row, rIdx) => {
+    Array.from(row.cells).forEach(cell => {
+      const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+      if (rowspan > 1) {
+        const start = rIdx;
+        const end = rIdx + rowspan - 1;
+        if (rowIndex >= start && rowIndex <= end) {
+          if (getComputedStyle(cell).display !== 'none') {
             cell.classList.add('highlight');
           }
         }
-      });
-    });
-  }
-
-  document.querySelectorAll('.s1').forEach(cell => {
-    cell.addEventListener('click', () => {
-      const wasHighlighted = cell.classList.contains('highlight');
-      clearHighlights();
-      if (!wasHighlighted) {
-        highlightTimeRow(cell);
       }
     });
   });
+}
+
+// Додаємо обробник кліку на всі клітинки з класом .s1 (час)
+document.querySelectorAll('.s1').forEach(cell => {
+  cell.addEventListener('click', () => {
+    const wasHighlighted = cell.classList.contains('highlight');
+    clearHighlights();
+    if (!wasHighlighted) {
+      highlightTimeRow(cell);
+    }
+  });
+});
 </script>
 </body>
 </html>
