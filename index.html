@@ -3,36 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <title>Розклад Фестивалю</title>
-<style>
-  @font-face {
-    font-family: 'PP Pangram Sans';
-    src: url('fonts/PPPangramSans-Regular.woff2') format('woff2');
-    font-weight: 400;
-  }
+  <style>
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('fonts/PPPangramSans-Regular.woff2') format('woff2');
+      font-weight: 400;
+    }
 
-  @font-face {
-    font-family: 'PP Pangram Sans';
-    src: url('fonts/PPPangramSans-Bold.woff2') format('woff2');
-    font-weight: 700;
-  }
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('fonts/PPPangramSans-Bold.woff2') format('woff2');
+      font-weight: 700;
+    }
 
-  body {
-    font-family: 'PP Pangram Sans', sans-serif;
-    background-color: #111;
-    color: #ffa500;
-    text-align: center;
-    padding-top: 100px;
-  }
+    body {
+      font-family: 'PP Pangram Sans', sans-serif;
+      background-color: #111;
+      color: #ffa500;
+      text-align: center;
+      padding-top: 100px;
+    }
 
-  h1 {
-    font-weight: 700;
-    font-size: 2.5em;
-    margin-bottom: 50px;
-  }
+    h1 {
+      font-weight: 700;
+      font-size: 2.5em;
+      margin-bottom: 50px;
+    }
 
-  .button {
-    font-weight: 700;
-     display: inline-block;
+    .button {
+      font-weight: 700;
+      display: inline-block;
       margin: 20px;
       padding: 20px 40px;
       font-size: 1.5em;
@@ -43,14 +43,31 @@
       cursor: pointer;
       transition: background-color 0.3s ease;
       text-decoration: none;
-  }
-   .button:hover {
+    }
+    .button:hover {
       background-color: #ffcc00;
+    }
+
+    /* Стиль для картинки з закругленими краями */
+    .rounded-image {
+      border-radius: 15px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto 40px auto; /* центруємо та додаємо відступ знизу */
+      box-shadow: 0 4px 10px rgba(255, 165, 0, 0.4); /* легка тінь, щоб картинка гарніше виглядала */
+    }
   </style>
 </head>
 <body>
   <h1>Розклад фестивалю</h1>
+
+ 
+
   <a href="день1.html" class="button">День 1</a>
   <a href="день2.html" class="button">День 2</a>
+
+   <!-- Приклад картинки з закругленими краями -->
+  <img src="festival-photo.jpg" alt="Фото фестивалю" class="rounded-image" />
 </body>
 </html>
