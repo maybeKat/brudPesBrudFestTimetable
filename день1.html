@@ -5,11 +5,36 @@
   <title>Розклад</title>
   <link type="text/css" rel="stylesheet" href="sheet.css">
   <style>
-    body {
-      background-color: #000;
-      color: orange;
-      font-family: 'Arial', sans-serif;
-    }
+    @font-face {
+  font-family: 'PP Pangram Sans';
+  src: url('PPPangramSans-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PP Pangram Sans';
+  src: url('PPPangramSans-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+body {
+  background-color: #000;
+  color: orange;
+  font-family: 'PP Pangram Sans', Arial, sans-serif;
+}
+
+
+/* Сценарії: час і назви сцен */
+.s0, .s1, .column-headers-background, .row-headers-background {
+  font-weight: 700;
+}
+
+/* Артисти */
+.s2, .s3, .s4 {
+  font-weight: 600;
+}
 
     .ritz .waffle {
       border-collapse: collapse;
