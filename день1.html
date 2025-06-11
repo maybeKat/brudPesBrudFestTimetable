@@ -3,9 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Розклад</title>
-  <link type="text/css" rel="stylesheet" href="sheet.css">
+<!--   <link type="text/css" rel="stylesheet" href="sheet.css"> -->
  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
  <style>
+   .highlight {
+  background-color: rgba(255, 165, 0, 0.3); /* легкий помаранчевий фон */
+  transition: background-color 0.3s ease;
+}
   @font-face {
     font-family: 'PP Pangram Sans';
     src: url('PPPangramSans-Semibold.otf') format('opentype');
@@ -239,44 +243,52 @@
     </div>
 
   <script>
-  function clearHighlights() {
-    document.querySelectorAll('.waffle td, .waffle th').forEach(td => {
-      td.classList.remove('highlight');
-    });
-  }
+// JS скрипт підсвічування
+function clearHighlights() {
+  document.querySelectorAll('.waffle td.highlight, .waffle th.highlight').forEach(cell => {
+    cell.classList.remove('highlight');
+  });
+}
 
-  function highlightTimeRow(clickedCell) {
-    const table = document.querySelector('.waffle');
-    const rows = Array.from(table.rows);
-    const rowIndex = rows.indexOf(clickedCell.parentElement);
+function highlightTimeRow(clickedCell) {
+  const table = document.querySelector('.waffle');
+  const rows = Array.from(table.rows);
+  const rowIndex = rows.indexOf(clickedCell.parentElement);
 
-    // 1. Підсвічуємо сам рядок
-    rows[rowIndex].querySelectorAll('td, th').forEach(td => td.classList.add('highlight'));
+  // Підсвічуємо видимі клітинки поточного рядка
+  rows[rowIndex].querySelectorAll('td, th').forEach(cell => {
+    if (getComputedStyle(cell).display !== 'none') {
+      cell.classList.add('highlight');
+    }
+  });
 
-    // 2. Шукаємо всі клітинки, які мають rowspan і перекривають цей час
-    rows.forEach((row, rIdx) => {
-      Array.from(row.cells).forEach(cell => {
-        const rs = parseInt(cell.getAttribute('rowspan') || '1');
-        if (rs > 1) {
-          const start = rIdx;
-          const end = rIdx + rs - 1;
-          if (rowIndex >= start && rowIndex <= end) {
+  // Підсвічуємо клітинки з rowspan, що охоплюють цей рядок
+  rows.forEach((row, rIdx) => {
+    Array.from(row.cells).forEach(cell => {
+      const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+      if (rowspan > 1) {
+        const start = rIdx;
+        const end = rIdx + rowspan - 1;
+        if (rowIndex >= start && rowIndex <= end) {
+          if (getComputedStyle(cell).display !== 'none') {
             cell.classList.add('highlight');
           }
         }
-      });
-    });
-  }
-
-  document.querySelectorAll('.s1').forEach(cell => {
-    cell.addEventListener('click', () => {
-      const wasHighlighted = cell.classList.contains('highlight');
-      clearHighlights();
-      if (!wasHighlighted) {
-        highlightTimeRow(cell);
       }
     });
   });
+}
+
+// Додаємо обробник кліку на всі клітинки з класом .s1 (час)
+document.querySelectorAll('.s1').forEach(cell => {
+  cell.addEventListener('click', () => {
+    const wasHighlighted = cell.classList.contains('highlight');
+    clearHighlights();
+    if (!wasHighlighted) {
+      highlightTimeRow(cell);
+    }
+  });
+});
 </script>
 </body>
 </html>
