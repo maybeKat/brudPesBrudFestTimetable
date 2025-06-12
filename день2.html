@@ -272,21 +272,14 @@
 <script>
   // === CONFIGURATION ===
   const timeZone = 'Europe/Kyiv';
-  // === CONFIGURATION FOR THE DAY ===
-  // Change this value for each file. Use 14 for день1.html and 15 for день2.html
   const scheduleDay = 15;
 
-  // We check the date on page load to see if we should activate auto-highlighting.
   const pageLoadTime = new Date(new Date().toLocaleString('en-US', { timeZone }));
   const day = pageLoadTime.getDate();
   const month = pageLoadTime.getMonth() + 1;
   const year = pageLoadTime.getFullYear();
   const isFestivalDay = day === scheduleDay && month === 6 && year === 2025;
 
-  /**
-   * Gets the current time in Kyiv, rounded to the nearest half hour (e.g., "14:00" or "14:30").
-   * This is called when highlighting, so it's always live.
-   */
   function getCurrentTimeRoundedHalfHour() {
     const now = new Date(new Date().toLocaleString('en-US', { timeZone }));
     const hours = now.getHours();
@@ -295,38 +288,24 @@
     return `${hours.toString().padStart(2, '0')}:${roundedMinutes}`;
   }
 
-  /**
-   * Clears all highlights and styles applied by manual user clicks.
-   * It is designed to NOT remove the automatic time highlight.
-   */
   function clearAllHighlights() {
-    // Remove all classes associated with manual highlighting
     document.querySelectorAll('.manual-highlight, .artist-highlight, .active, .time-highlight-active')
       .forEach(cell => cell.classList.remove('manual-highlight', 'artist-highlight', 'active', 'time-highlight-active'));
 
-    // The .highlight class is used for both auto and manual highlighting.
-    // We only remove it from cells that are NOT marked as auto-highlighted.
     document.querySelectorAll('.highlight:not(.auto-highlight)').forEach(cell => {
       cell.classList.remove('highlight');
-      cell.style.fontWeight = ''; // Reset font weight for previously highlighted cells
+      cell.style.fontWeight = '';
     });
   }
 
-  /**
-   * Finds the current timeslot in the table and applies automatic highlighting.
-   * This highlight is preserved during manual clicks.
-   */
   function highlightCurrentTime() {
-    // First, clear any existing auto-highlights to handle time changes.
     document.querySelectorAll('.auto-highlight').forEach(cell => {
-        cell.classList.remove('highlight', 'auto-highlight');
-        cell.style.fontWeight = '';
+      cell.classList.remove('highlight', 'auto-highlight');
+      cell.style.fontWeight = '';
     });
 
     const currentTime = getCurrentTimeRoundedHalfHour();
     const hour = parseInt(currentTime.split(':')[0], 10);
-
-    // Exit if the current time is outside the festival's active hours (14:00 - 22:00)
     if (hour < 14 || hour >= 22) return;
 
     const targetCell = Array.from(document.querySelectorAll('.s1'))
@@ -344,29 +323,21 @@
         }
       };
 
-      // Highlight the row itself
       rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
 
-      // Highlight cells with rowspan that span across the current time row
       rows.forEach((row, rIdx) => {
         Array.from(row.cells).forEach(cell => {
           const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
-          if (rowspan > 1) {
-            const start = rIdx;
-            const end = rIdx + rowspan - 1;
-            if (rowIndex >= start && rowIndex <= end) {
-              applyHighlight(cell);
-            }
+          const start = rIdx;
+          const end = rIdx + rowspan - 1;
+          if (rowIndex >= start && rowIndex <= end) {
+            applyHighlight(cell);
           }
         });
       });
     }
   }
 
-  /**
-   * Highlights the entire row and corresponding artists when a time cell is clicked.
-   * @param {HTMLElement} clickedCell The time cell that was clicked.
-   */
   function highlightManualTimeRow(clickedCell) {
     const table = document.querySelector('.waffle');
     const rows = Array.from(table.rows);
@@ -378,10 +349,8 @@
       }
     };
 
-    // Highlight the entire row
     rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
 
-    // Highlight cells with rowspan that span this row
     rows.forEach((row, rIdx) => {
       Array.from(row.cells).forEach(cell => {
         const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
@@ -393,14 +362,9 @@
       });
     });
 
-    // Make the clicked time cell bold
     clickedCell.classList.add('time-highlight-active');
   }
 
-  /**
-   * Highlights the clicked artist, all other artists playing at the same time, and the time slots.
-   * @param {HTMLElement} clickedCell The artist cell that was clicked.
-   */
   function highlightArtistRow(clickedCell) {
     const table = document.querySelector('.waffle');
     const rows = Array.from(table.rows);
@@ -409,24 +373,20 @@
     const clickedStart = clickedRowIndex;
     const clickedEnd = clickedRowIndex + clickedRowspan - 1;
 
-    // Make the clicked artist cell bold and slightly darker
     clickedCell.classList.add('active');
 
-    // Find and highlight all other artists whose performance times overlap
     document.querySelectorAll('.waffle td:not(.s1)').forEach(cell => {
       const cellRow = rows.indexOf(cell.parentElement);
       const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
       const cellStart = cellRow;
       const cellEnd = cellRow + rowspan - 1;
 
-      // Check for overlap in performance times (using row spans)
       const overlap = !(cellEnd < clickedStart || cellStart > clickedEnd);
       if (overlap) {
         cell.classList.add('artist-highlight');
       }
     });
 
-    // Highlight the corresponding time cells for the clicked artist's slot
     for (let r = clickedStart; r <= clickedEnd; r++) {
       const timeCell = rows[r].querySelector('.s1');
       if (timeCell) timeCell.classList.add('artist-highlight');
@@ -435,34 +395,36 @@
 
   // === INITIALIZATION ===
   document.addEventListener('DOMContentLoaded', () => {
-    // Apply automatic highlight if it's a festival day
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+
     if (isFestivalDay) {
       highlightCurrentTime();
-      // Also, check every 30 seconds to update the highlight if the time changes
       setInterval(highlightCurrentTime, 30000);
     }
 
-    // Add click listener for time cells (e.g., "14:00")
-    document.querySelectorAll('.s1').forEach(cell => {
-      cell.addEventListener('click', () => {
-        const isAlreadyActive = cell.classList.contains('time-highlight-active');
-        clearAllHighlights(); // Clear previous manual highlights
-        if (!isAlreadyActive) {
-          highlightManualTimeRow(cell); // Highlight new selection
-        }
-      });
-    });
+    // === Add manual click handlers ===
+    rows.forEach((row, rowIndex) => {
+      // Пропускаємо перший рядок (назви сцен)
+      if (rowIndex === 0) return;
 
-    // Add click listener for artist cells
-    document.querySelectorAll('.waffle td:not(.s1)').forEach(cell => {
-      // Only add listeners to cells that actually contain an artist name
-      if (cell.textContent.trim() === '') return;
-
-      cell.addEventListener('click', () => {
-        const isAlreadyActive = cell.classList.contains('active');
-        clearAllHighlights(); // Clear previous manual highlights
-        if (!isAlreadyActive) {
-          highlightArtistRow(cell); // Highlight new selection
+      row.querySelectorAll('td').forEach(cell => {
+        // TIME CELLS
+        if (cell.classList.contains('s1')) {
+          cell.addEventListener('click', () => {
+            const isAlreadyActive = cell.classList.contains('time-highlight-active');
+            clearAllHighlights();
+            if (!isAlreadyActive) highlightManualTimeRow(cell);
+          });
+        } else {
+          // ARTIST CELLS
+          if (cell.textContent.trim() !== '') {
+            cell.addEventListener('click', () => {
+              const isAlreadyActive = cell.classList.contains('active');
+              clearAllHighlights();
+              if (!isAlreadyActive) highlightArtistRow(cell);
+            });
+          }
         }
       });
     });
