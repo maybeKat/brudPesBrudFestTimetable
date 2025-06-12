@@ -5,133 +5,134 @@
   <meta charset="UTF-8" />
   <title>Розклад Фестивалю</title>
 <style>
-  @font-face {
-    font-family: 'PP Pangram Sans';
-    src: url('PPPangramSans-Semibold.otf') format('opentype');
-    font-weight: 400;
-  }
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('PPPangramSans-Semibold.otf') format('opentype');
+      font-weight: 400;
+    }
 
-  @font-face {
-    font-family: 'PP Pangram Sans';
-    src: url('PPPangramSans-Bold.otf') format('opentype');
-    font-weight: 700;
-  }
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('PPPangramSans-Bold.otf') format('opentype');
+      font-weight: 700;
+    }
 
-  body {
-    font-family: 'PP Pangram Sans', sans-serif;
-    margin: 0;
-    padding: 0;
-    background:
-      linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-      url('festival-photo.jpg') no-repeat center center fixed;
-    background-color: #000;
-    background-size: cover;
-    color: #fff;
-    min-height: 100vh;
-    box-sizing: border-box;
-  }
+    body {
+      font-family: 'PP Pangram Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background:
+        linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+        url('festival-photo.jpg') no-repeat center center fixed;
+      background-color: #000;
+      background-size: cover;
+      color: #fff;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
 
-  .main-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-  }
+    .main-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
 
-  h1 {
-    background-color: rgba(179, 0, 0, 0.5);
-    color: #fff;
-    font-weight: 700;
-    font-size: 2.5em;
-    padding: 15px 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
-    margin-bottom: 30px;
-    max-width: 90%;
-    display: inline-block;
-  }
+    h1 {
+      background-color: rgba(179, 0, 0, 0.5);
+      color: #fff;
+      font-weight: 700;
+      font-size: 2.5em;
+      padding: 15px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
+      margin-bottom: 30px;
+      max-width: 90%;
+      display: inline-block;
+    }
 
-  .button-container {
-    background-color: rgba(179, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 15px 30px;
-    box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-    max-width: 500px;
-    width: 100%;
-    margin-bottom: 20px;
-  }
+    .button-container {
+      background-color: rgba(179, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 15px 30px;
+      box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      max-width: 500px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
 
-  .hint-container {
-    background-color: rgba(179, 0, 0, 0.5);
-    border-radius: 10px;
-    padding: 15px 30px;
-    box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
-    max-width: 500px;
-    width: 100%;
-    text-align: left;
-  }
+    .hint-container {
+      background-color: rgba(179, 0, 0, 0.5);
+      border-radius: 10px;
+      padding: 15px 30px;
+      box-shadow: 0 4px 8px rgba(179, 0, 0, 0.7);
+      max-width: 500px;
+      width: 100%;
+      text-align: left;
+      font-size: 1.8em;
+    }
 
-  .hint-title {
-    font-weight: 700;
-    font-size: 1.5em;
-    cursor: pointer;
-    text-align: center;
-  }
+    .hint-title {
+      font-weight: 700;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center;
+    }
 
-  .hint-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.5s ease-out;
-    padding-top: 0;
-  }
+    .hint-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease-out;
+      padding-top: 0;
+    }
 
-  .hint-container.active .hint-content {
-    max-height: 500px;
-    padding-top: 15px;
-  }
+    .hint-container.active .hint-content {
+      max-height: 500px;
+      padding-top: 15px;
+    }
 
-  .hint-content ul {
-    margin: 0;
-    padding-left: 20px;
-  }
+    .hint-content ul {
+      margin: 0;
+      padding-left: 20px;
+    }
 
-  .hint-content li {
-    margin-bottom: 10px;
-  }
+    .hint-content li {
+      margin-bottom: 10px;
+    }
 
-  .button {
-    font-weight: 700;
-    padding: 12px 30px;
-    font-size: 1.5em;
-    color: #fff;
-    background-color: transparent;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    flex-grow: 1;
-    max-width: 180px;
-    text-align: center;
-  }
+    .button {
+      font-weight: 700;
+      padding: 12px 30px;
+      font-size: 1.5em;
+      color: #fff;
+      background-color: transparent;
+      border: 2px solid #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      flex-grow: 1;
+      max-width: 180px;
+      text-align: center;
+    }
 
-  .button:hover {
-    background-color: #fff;
-    color: #b30000;
-  }
+    .button:hover {
+      background-color: #fff;
+      color: #b30000;
+    }
 
-  @media (max-width: 480px) {
+   @media (max-width: 480px) {
     h1 {
       font-size: 1.6em;
       padding: 12px 20px;
@@ -153,7 +154,7 @@
       padding: 10px;
     }
   }
-</style>
+  </style>
 
 
 </head>
