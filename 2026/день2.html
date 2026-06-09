@@ -291,26 +291,67 @@
       border-left: 2px solid rgba(255, 255, 255, 0.35);
     }
 
-    /* ── Notify bell ── */
+    /* ── Notify heart ── */
     .notify-btn {
       position: absolute;
-      bottom: 3px;
-      right: 3px;
-      background: none;
-      border: none;
-      padding: 0;
+      bottom: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.25);
       cursor: pointer;
-      font-size: 0.65em;
-      line-height: 1;
-      opacity: 0.25;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
       z-index: 2;
-      transition: opacity 0.15s;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .notify-btn:hover { opacity: 0.7; }
+    .notify-btn svg {
+      width: 10px;
+      height: 10px;
+      fill: none;
+      stroke: rgba(255,255,255,0.3);
+      stroke-width: 2.5;
+      transition: fill 0.2s, stroke 0.2s;
+    }
+    .notify-btn:hover svg { stroke: rgba(255,255,255,0.7); }
     .notify-btn.notify-active {
-      opacity: 1;
-      filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.9));
+      border-color: rgba(255, 80, 80, 0.7);
+      background: rgba(255, 50, 50, 0.12);
     }
+    .notify-btn.notify-active svg {
+      fill: #ff4d4d;
+      stroke: #ff4d4d;
+    }
+
+    /* ── Notify toast ── */
+    .notify-toast {
+      position: fixed;
+      bottom: 72px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: rgba(15,15,15,0.96);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-left: 3px solid #f5d800;
+      color: rgba(255,255,255,0.85);
+      padding: 10px 14px;
+      font-size: 0.78em;
+      line-height: 1.5;
+      max-width: 300px;
+      width: calc(100vw - 40px);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .notify-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .notify-toast strong { color: #f5d800; }
   </style>
 </head>
 <body>
@@ -605,7 +646,26 @@
       }, delay);
     }
 
-    function updateBell(id, active) {
+    const HEART_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+
+    let toastTimer;
+    function showToast(name, added) {
+      let toast = document.getElementById('notify-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'notify-toast';
+        toast.className = 'notify-toast';
+        document.body.appendChild(toast);
+      }
+      toast.innerHTML = added
+        ? `<strong>${name}</strong> додано в обране.<br>За 10 хв до виступу отримаєте сповіщення.`
+        : `<strong>${name}</strong> видалено з обраного.`;
+      clearTimeout(toastTimer);
+      toast.classList.add('show');
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    function updateHeart(id, active) {
       const btn = document.querySelector(`[data-notify-id="${id}"]`);
       if (btn) btn.classList.toggle('notify-active', active);
     }
@@ -617,13 +677,15 @@
       if (subs.some(s => s.id === id)) {
         subs = subs.filter(s => s.id !== id);
         saveSubs(subs);
-        updateBell(id, false);
+        updateHeart(id, false);
+        showToast(name, false);
       } else {
         const sub = { id, name, startMin, stage, timeStr, day: scheduleDay, month: scheduleMonth, year: scheduleYear };
         subs.push(sub);
         saveSubs(subs);
-        updateBell(id, true);
+        updateHeart(id, true);
         scheduleNotification(sub);
+        showToast(name, true);
       }
     }
 
@@ -642,8 +704,8 @@
         const btn = document.createElement('button');
         btn.className = 'notify-btn';
         btn.dataset.notifyId = id;
-        btn.setAttribute('aria-label', 'Нагадати');
-        btn.textContent = '🔔';
+        btn.setAttribute('aria-label', 'Додати в обране');
+        btn.innerHTML = HEART_SVG;
         if (isSubscribed(id)) btn.classList.add('notify-active');
         btn.addEventListener('click', e => { e.stopPropagation(); toggleSub(id, name, startMin, stage, timeStr); });
         card.appendChild(btn);
