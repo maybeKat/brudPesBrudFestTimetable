@@ -710,9 +710,7 @@
         card.appendChild(btn);
       });
 
-      getSubs()
-        .filter(s => s.day === scheduleDay && s.month === scheduleMonth && s.year === scheduleYear)
-        .forEach(scheduleNotification);
+      getSubs().forEach(scheduleNotification);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
