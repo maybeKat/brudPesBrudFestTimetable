@@ -290,6 +290,27 @@
       background: rgba(255, 255, 255, 0.07);
       border-left: 2px solid rgba(255, 255, 255, 0.35);
     }
+
+    /* ── Notify bell ── */
+    .notify-btn {
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      font-size: 0.65em;
+      line-height: 1;
+      opacity: 0.25;
+      z-index: 2;
+      transition: opacity 0.15s;
+    }
+    .notify-btn:hover { opacity: 0.7; }
+    .notify-btn.notify-active {
+      opacity: 1;
+      filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.9));
+    }
   </style>
 </head>
 <body>
@@ -557,6 +578,82 @@
       activeTimeLabel = label;
     }
 
+    // ── Notifications ──
+    const STAGE_NAMES = ['АНГАР', 'ДВІР', 'KELLER'];
+    const STORAGE_KEY = 'bpbf_subs';
+
+    function getSubs() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+    function saveSubs(subs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(subs)); }
+    function isSubscribed(id) { return getSubs().some(s => s.id === id); }
+
+    function scheduleNotification(sub) {
+      const notifyMin = sub.startMin - 10;
+      const target = new Date(sub.year, sub.month - 1, sub.day, Math.floor(notifyMin / 60), notifyMin % 60, 0);
+      const delay = target.getTime() - Date.now();
+      if (delay < 0) return;
+      setTimeout(() => {
+        navigator.serviceWorker.ready.then(reg => {
+          reg.showNotification(`⏰ Через 10 хв: ${sub.name}`, {
+            body: `${sub.stage} · ${sub.timeStr}`,
+            icon: './photo-output.png',
+            tag: sub.id,
+            renotify: true,
+          });
+        });
+      }, delay);
+    }
+
+    function updateBell(id, active) {
+      const btn = document.querySelector(`[data-notify-id="${id}"]`);
+      if (btn) btn.classList.toggle('notify-active', active);
+    }
+
+    async function toggleSub(id, name, startMin, stage, timeStr) {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return;
+      let subs = getSubs();
+      if (subs.some(s => s.id === id)) {
+        subs = subs.filter(s => s.id !== id);
+        saveSubs(subs);
+        updateBell(id, false);
+      } else {
+        const sub = { id, name, startMin, stage, timeStr, day: scheduleDay, month: scheduleMonth, year: scheduleYear };
+        subs.push(sub);
+        saveSubs(subs);
+        updateBell(id, true);
+        scheduleNotification(sub);
+      }
+    }
+
+    function initNotifications() {
+      if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+      navigator.serviceWorker.register('./sw.js');
+
+      document.querySelectorAll('.artist-card').forEach(card => {
+        const id = card.id;
+        const stageIdx = parseInt(id.split('-')[1]);
+        const startMin = parseInt(card.dataset.start);
+        const timeStr = card.querySelector('.card-time').textContent;
+        const name = card.querySelector('.card-name').innerText.replace(/\s*b2b\s*/gi, ' b2b ').trim();
+        const stage = STAGE_NAMES[stageIdx];
+
+        const btn = document.createElement('button');
+        btn.className = 'notify-btn';
+        btn.dataset.notifyId = id;
+        btn.setAttribute('aria-label', 'Нагадати');
+        btn.textContent = '🔔';
+        if (isSubscribed(id)) btn.classList.add('notify-active');
+        btn.addEventListener('click', e => { e.stopPropagation(); toggleSub(id, name, startMin, stage, timeStr); });
+        card.appendChild(btn);
+      });
+
+      getSubs()
+        .filter(s => s.day === scheduleDay && s.month === scheduleMonth && s.year === scheduleYear)
+        .forEach(scheduleNotification);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       if (isFestivalDay) {
         updateCurrentTimeLine();
@@ -589,6 +686,7 @@
       });
 
       document.addEventListener('click', () => clearHighlights());
+      initNotifications();
     });
   </script>
 </body>
