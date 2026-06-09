@@ -42,15 +42,27 @@
       text-align: center;
       font-size: clamp(0.7em, 3vw, 1em);
       padding: clamp(6px, 1.5vw, 10px) 12px;
+      letter-spacing: 0.08em;
+      flex-shrink: 0;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      letter-spacing: 0.08em;
-      flex-shrink: 0;
     }
 
-    .day-nav { position: absolute; top: 50%; transform: translateY(-50%); color: #000; text-decoration: none; font-size: 0.85em; font-weight: 700; opacity: 0.6; padding: 4px 8px; }
+    .day-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+      text-decoration: none;
+      font-size: 0.85em;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      padding: 4px 8px;
+    }
+
     .day-nav:hover { opacity: 1; }
     .day-nav--prev { left: 8px; }
     .day-nav--next { right: 8px; }
@@ -122,6 +134,12 @@
     }
     .stage-header-wrap:nth-child(4) .stage-header {
       clip-path: polygon(2% 0%, 98% 0%, 94% 100%, 6% 100%);
+    }
+
+    .stage-header-inner { cursor: pointer; }
+    .stage-header-inner.stage-active .stage-header {
+      background: #f5d800;
+      color: #000;
     }
 
     /* ── Scrollable body ── */
@@ -248,10 +266,10 @@
     /* ── Current time line ── */
     .current-time-line {
       position: absolute;
-      left: 0;
+      left: 52px;
       right: 0;
-      height: 2px;
-      background: rgb(255, 167, 34);
+      height: 3px;
+      background: rgba(255, 255, 255, 0.45);
       z-index: 10;
       pointer-events: none;
     }
@@ -260,11 +278,17 @@
       content: '';
       position: absolute;
       left: -4px;
-      top: -4px;
-      width: 10px;
-      height: 10px;
+      top: -3px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: rgb(255, 167, 34);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ── Now-playing card glow ── */
+    .artist-card.now-playing:not(.highlighted):not(.active) {
+      background: rgba(255, 255, 255, 0.07);
+      border-left: 2px solid rgba(255, 255, 255, 0.35);
     }
   </style>
 </head>
@@ -273,24 +297,24 @@
     <div class="day-bar">
       <a href="../" class="day-nav day-nav--prev">← ГОЛОВНА</a>
       DAY 2 &nbsp;·&nbsp; 14 ЧЕРВНЯ
-      <a href="день1.html" class="day-nav day-nav--next">← ДЕНЬ 1</a>
+      <a href="день1.html" class="day-nav day-nav--next">ДЕНЬ 1 →</a>
     </div>
     <div class="schedule-header">
       <div class="time-gutter-header"></div>
       <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="0" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">АНГАР</div>
       </div>
     </div>
 <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="1" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">ДВІР</div>
       </div>
     </div>
 <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="2" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">KELLER</div>
       </div>
@@ -466,9 +490,34 @@
       }
       line.style.display = 'block';
       line.style.top = minutesToTop(min) + 'px';
+
+      document.querySelectorAll('.artist-card').forEach(card => {
+        const s = parseInt(card.dataset.start);
+        const e = parseInt(card.dataset.end);
+        if (min >= s && min < e) {
+          card.classList.add('now-playing');
+        } else {
+          card.classList.remove('now-playing');
+        }
+      });
     }
 
     let activeTimeLabel = null;
+    let activeStageEl = null;
+
+    function toggleStage(el, e) {
+      e.stopPropagation();
+      const stage = el.dataset.stage;
+      const isActive = el.classList.contains('stage-active');
+      clearHighlights();
+      if (!isActive) {
+        el.classList.add('stage-active');
+        activeStageEl = el;
+        document.querySelectorAll('.artist-card').forEach(card => {
+          if (card.id.startsWith('act-' + stage + '-')) card.classList.add('highlighted');
+        });
+      }
+    }
 
     function clearHighlights() {
       document.querySelectorAll('.artist-card').forEach(c => {
@@ -477,6 +526,10 @@
       if (activeTimeLabel) {
         activeTimeLabel.classList.remove('time-active');
         activeTimeLabel = null;
+      }
+      if (activeStageEl) {
+        activeStageEl.classList.remove('stage-active');
+        activeStageEl = null;
       }
     }
 

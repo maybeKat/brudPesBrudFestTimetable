@@ -136,6 +136,12 @@
       clip-path: polygon(2% 0%, 98% 0%, 94% 100%, 6% 100%);
     }
 
+    .stage-header-inner { cursor: pointer; }
+    .stage-header-inner.stage-active .stage-header {
+      background: #f5d800;
+      color: #000;
+    }
+
     /* ── Scrollable body ── */
     .schedule-scroll {
       flex: 1;
@@ -296,19 +302,19 @@
     <div class="schedule-header">
       <div class="time-gutter-header"></div>
       <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="0" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">АНГАР</div>
       </div>
     </div>
 <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="1" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">ДВІР</div>
       </div>
     </div>
 <div class="stage-header-wrap">
-      <div class="stage-header-inner">
+      <div class="stage-header-inner" data-stage="2" onclick="toggleStage(this, event)">
         <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
         <div class="stage-header">KELLER</div>
       </div>
@@ -455,7 +461,7 @@
 
   <script>
     const timeZone = 'Europe/Kyiv';
-    const scheduleDay = 9;
+    const scheduleDay = 13;
     const scheduleMonth = 6;
     const scheduleYear = 2026;
     const startMin = 840;
@@ -469,7 +475,8 @@
       now.getFullYear() === scheduleYear;
 
     function getCurrentMinutes() {
-      return 945; // TEST: 15:45
+      const t = new Date(new Date().toLocaleString('en-US', { timeZone }));
+      return t.getHours() * 60 + t.getMinutes();
     }
 
     function minutesToTop(min) {
@@ -498,6 +505,21 @@
     }
 
     let activeTimeLabel = null;
+    let activeStageEl = null;
+
+    function toggleStage(el, e) {
+      e.stopPropagation();
+      const stage = el.dataset.stage;
+      const isActive = el.classList.contains('stage-active');
+      clearHighlights();
+      if (!isActive) {
+        el.classList.add('stage-active');
+        activeStageEl = el;
+        document.querySelectorAll('.artist-card').forEach(card => {
+          if (card.id.startsWith('act-' + stage + '-')) card.classList.add('highlighted');
+        });
+      }
+    }
 
     function clearHighlights() {
       document.querySelectorAll('.artist-card').forEach(c => {
@@ -506,6 +528,10 @@
       if (activeTimeLabel) {
         activeTimeLabel.classList.remove('time-active');
         activeTimeLabel = null;
+      }
+      if (activeStageEl) {
+        activeStageEl.classList.remove('stage-active');
+        activeStageEl = null;
       }
     }
 
