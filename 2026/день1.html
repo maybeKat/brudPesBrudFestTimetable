@@ -523,7 +523,7 @@
 
   <script>
     const timeZone = 'Europe/Kyiv';
-    const scheduleDay = 13;
+    const scheduleDay = 9;
     const scheduleMonth = 6;
     const scheduleYear = 2026;
     const startMin = 840;
@@ -637,14 +637,13 @@
       const delay = target.getTime() - Date.now();
       if (delay < 0) return;
       setTimeout(() => {
-        navigator.serviceWorker.ready.then(reg => {
-          reg.showNotification(`⏰ Через 10 хв: ${sub.name}`, {
-            body: `${sub.stage} · ${sub.timeStr}`,
-            icon: './photo-output.png',
-            tag: sub.id,
-            renotify: true,
-          });
-        });
+        const title = `⏰ Через 10 хв: ${sub.name}`;
+        const opts = { body: `${sub.stage} · ${sub.timeStr}`, icon: './photo-output.png', tag: sub.id, renotify: true };
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts));
+        } else {
+          new Notification(title, opts);
+        }
       }, delay);
     }
 
@@ -692,8 +691,8 @@
     }
 
     function initNotifications() {
-      if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
-      navigator.serviceWorker.register('./sw.js');
+      if (!('Notification' in window)) return;
+      if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 
       document.querySelectorAll('.artist-card').forEach(card => {
         const id = card.id;
