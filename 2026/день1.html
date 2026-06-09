@@ -44,7 +44,28 @@
       padding: clamp(6px, 1.5vw, 10px) 12px;
       letter-spacing: 0.08em;
       flex-shrink: 0;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    .day-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+      text-decoration: none;
+      font-size: 0.85em;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      padding: 4px 8px;
+    }
+
+    .day-nav:hover { opacity: 1; }
+    .day-nav--prev { left: 8px; }
+    .day-nav--next { right: 8px; }
 
     /* ── Header ── */
     .schedule-header {
@@ -239,10 +260,10 @@
     /* ── Current time line ── */
     .current-time-line {
       position: absolute;
-      left: 0;
+      left: 52px;
       right: 0;
-      height: 2px;
-      background: rgb(255, 167, 34);
+      height: 3px;
+      background: rgba(255, 255, 255, 0.45);
       z-index: 10;
       pointer-events: none;
     }
@@ -251,17 +272,27 @@
       content: '';
       position: absolute;
       left: -4px;
-      top: -4px;
-      width: 10px;
-      height: 10px;
+      top: -3px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: rgb(255, 167, 34);
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ── Now-playing card glow ── */
+    .artist-card.now-playing:not(.highlighted):not(.active) {
+      background: rgba(255, 255, 255, 0.07);
+      border-left: 2px solid rgba(255, 255, 255, 0.35);
     }
   </style>
 </head>
 <body>
   <div class="schedule-wrapper">
-    <div class="day-bar">DAY 1 &nbsp;·&nbsp; 13 ЧЕРВНЯ</div>
+    <div class="day-bar">
+      <a href="../" class="day-nav day-nav--prev">← ГОЛОВНА</a>
+      DAY 1 &nbsp;·&nbsp; 13 ЧЕРВНЯ
+      <a href="день2.html" class="day-nav day-nav--next">ДЕНЬ 2 →</a>
+    </div>
     <div class="schedule-header">
       <div class="time-gutter-header"></div>
       <div class="stage-header-wrap">
@@ -424,7 +455,7 @@
 
   <script>
     const timeZone = 'Europe/Kyiv';
-    const scheduleDay = 13;
+    const scheduleDay = 9;
     const scheduleMonth = 6;
     const scheduleYear = 2026;
     const startMin = 840;
@@ -438,8 +469,7 @@
       now.getFullYear() === scheduleYear;
 
     function getCurrentMinutes() {
-      const t = new Date(new Date().toLocaleString('en-US', { timeZone }));
-      return t.getHours() * 60 + t.getMinutes();
+      return 945; // TEST: 15:45
     }
 
     function minutesToTop(min) {
@@ -455,6 +485,16 @@
       }
       line.style.display = 'block';
       line.style.top = minutesToTop(min) + 'px';
+
+      document.querySelectorAll('.artist-card').forEach(card => {
+        const s = parseInt(card.dataset.start);
+        const e = parseInt(card.dataset.end);
+        if (min >= s && min < e) {
+          card.classList.add('now-playing');
+        } else {
+          card.classList.remove('now-playing');
+        }
+      });
     }
 
     let activeTimeLabel = null;

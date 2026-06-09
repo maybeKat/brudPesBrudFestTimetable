@@ -42,9 +42,18 @@
       text-align: center;
       font-size: clamp(0.7em, 3vw, 1em);
       padding: clamp(6px, 1.5vw, 10px) 12px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       letter-spacing: 0.08em;
       flex-shrink: 0;
     }
+
+    .day-nav { position: absolute; top: 50%; transform: translateY(-50%); color: #000; text-decoration: none; font-size: 0.85em; font-weight: 700; opacity: 0.6; padding: 4px 8px; }
+    .day-nav:hover { opacity: 1; }
+    .day-nav--prev { left: 8px; }
+    .day-nav--next { right: 8px; }
 
     /* ── Header ── */
     .schedule-header {
@@ -261,7 +270,11 @@
 </head>
 <body>
   <div class="schedule-wrapper">
-    <div class="day-bar">DAY 2 &nbsp;·&nbsp; 14 ЧЕРВНЯ</div>
+    <div class="day-bar">
+      <a href="../" class="day-nav day-nav--prev">← ГОЛОВНА</a>
+      DAY 2 &nbsp;·&nbsp; 14 ЧЕРВНЯ
+      <a href="день1.html" class="day-nav day-nav--next">← ДЕНЬ 1</a>
+    </div>
     <div class="schedule-header">
       <div class="time-gutter-header"></div>
       <div class="stage-header-wrap">
