@@ -327,6 +327,125 @@
       stroke: #ff4d4d;
     }
 
+    /* ── Floating fav button ── */
+    .fav-float-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: #f5d800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+      transition: transform 0.15s;
+    }
+    .fav-float-btn:active { transform: scale(0.92); }
+    .fav-float-btn svg { width: 22px; height: 22px; fill: #000; }
+    .fav-float-count {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ff4d4d;
+      color: #fff;
+      font-size: 0.65em;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .fav-float-count.visible { display: flex; }
+
+    /* ── Day fav modal ── */
+    .day-fav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .day-fav-overlay.open { display: flex; }
+    .day-fav-modal {
+      background: #111;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid #f5d800;
+    }
+    .day-fav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .day-fav-title {
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .day-fav-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4em;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .day-fav-list { overflow-y: auto; padding: 12px 0; }
+    .day-fav-empty {
+      padding: 32px 20px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.85em;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+    .day-fav-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      gap: 12px;
+    }
+    .day-fav-item-left { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .day-fav-item-name {
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .day-fav-item-meta {
+      font-size: 0.72em;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.5);
+    }
+    .day-fav-item-right { flex-shrink: 0; text-align: right; }
+    .day-fav-item-time { font-weight: 700; font-size: 0.9em; letter-spacing: 0.06em; }
+    .day-fav-item-countdown {
+      font-size: 0.72em;
+      letter-spacing: 0.06em;
+      color: #f5d800;
+      margin-top: 2px;
+    }
+
     /* ── Notify toast ── */
     .notify-toast {
       position: fixed;
@@ -716,7 +835,76 @@
 
       document.addEventListener('click', () => clearHighlights());
       initFavourites();
+      updateDayFavCount();
     });
+  </script>
+
+  <button class="fav-float-btn" onclick="openDayFavs(event)">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <span class="fav-float-count" id="day-fav-count"></span>
+  </button>
+
+  <div class="day-fav-overlay" id="day-fav-overlay" onclick="closeDayFavsIfBg(event)">
+    <div class="day-fav-modal">
+      <div class="day-fav-header">
+        <span class="day-fav-title">Обрані · День 2</span>
+        <button class="day-fav-close" onclick="closeDayFavs()">✕</button>
+      </div>
+      <div class="day-fav-list" id="day-fav-list"></div>
+    </div>
+  </div>
+
+  <script>
+    function getDayFavCountdown(startMin) {
+      if (!isFestivalDay) return null;
+      const nowMin = getCurrentMinutes();
+      const diff = startMin - nowMin;
+      if (diff <= 0 || diff > 120) return null;
+      if (diff < 60) return `через ${diff} хв`;
+      const h = Math.floor(diff / 60), m = diff % 60;
+      return m > 0 ? `через ${h} год ${m} хв` : `через ${h} год`;
+    }
+
+    function updateDayFavCount() {
+      const favs = getFavs();
+      const el = document.getElementById('day-fav-count');
+      el.textContent = favs.length;
+      el.classList.toggle('visible', favs.length > 0);
+    }
+
+    function renderDayFavList() {
+      const favs = getFavs().slice().sort((a, b) => a.startMin - b.startMin);
+      const list = document.getElementById('day-fav-list');
+      if (!favs.length) {
+        list.innerHTML = '<div class="day-fav-empty">Ще нічого не обрано.<br>Натисни ♡ на артисті.</div>';
+        return;
+      }
+      list.innerHTML = favs.map(f => {
+        const countdown = getDayFavCountdown(f.startMin);
+        return `<div class="day-fav-item">
+          <div class="day-fav-item-left">
+            <div class="day-fav-item-name">${f.name}</div>
+            <div class="day-fav-item-meta">${f.stage}</div>
+          </div>
+          <div class="day-fav-item-right">
+            <div class="day-fav-item-time">${f.time}</div>
+            ${countdown ? `<div class="day-fav-item-countdown">${countdown}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function openDayFavs(e) {
+      e.stopPropagation();
+      renderDayFavList();
+      document.getElementById('day-fav-overlay').classList.add('open');
+    }
+    function closeDayFavs() {
+      document.getElementById('day-fav-overlay').classList.remove('open');
+    }
+    function closeDayFavsIfBg(e) {
+      if (e.target === document.getElementById('day-fav-overlay')) closeDayFavs();
+    }
   </script>
 </body>
 </html>
