@@ -642,7 +642,7 @@
 
   <script>
     const timeZone = 'Europe/Kyiv';
-    const scheduleDay = 9;
+    const scheduleDay = 13;
     const scheduleMonth = 6;
     const scheduleYear = 2026;
     const startMin = 840;
@@ -782,6 +782,7 @@
       const btn = document.querySelector(`[data-fav-id="${id}"]`);
       if (btn) btn.classList.toggle('notify-active', adding);
       showToast(name, adding);
+      if (typeof updateDayFavCount === 'function') updateDayFavCount();
     }
 
     function initFavourites() {

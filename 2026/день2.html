@@ -780,6 +780,7 @@
       const btn = document.querySelector(`[data-fav-id="${id}"]`);
       if (btn) btn.classList.toggle('notify-active', adding);
       showToast(name, adding);
+      if (typeof updateDayFavCount === 'function') updateDayFavCount();
     }
 
     function initFavourites() {
