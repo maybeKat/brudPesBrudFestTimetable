@@ -157,12 +157,12 @@ function generateHTML(day) {
   <style>
     @font-face {
       font-family: 'PP Pangram Sans';
-      src: url('../2024/PPPangramSans-Semibold.otf') format('opentype');
+      src: url('../2025/PPPangramSans-Semibold.otf') format('opentype');
       font-weight: 600;
     }
     @font-face {
       font-family: 'PP Pangram Sans';
-      src: url('../2024/PPPangramSans-Bold.otf') format('opentype');
+      src: url('../2025/PPPangramSans-Bold.otf') format('opentype');
       font-weight: 700;
     }
 

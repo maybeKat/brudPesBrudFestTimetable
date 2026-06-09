@@ -2,530 +2,434 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>Розклад день 1</title>
-  <style>
-    @font-face {
-      font-family: 'PP Pangram Sans';
-      src: url('../2024/PPPangramSans-Semibold.otf') format('opentype');
-      font-weight: 600;
-    }
-    @font-face {
-      font-family: 'PP Pangram Sans';
-      src: url('../2024/PPPangramSans-Bold.otf') format('opentype');
-      font-weight: 700;
-    }
+<!--   <link type="text/css" rel="stylesheet" href="sheet.css"> -->
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<style>
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+  }
 
-    *, *::before, *::after { box-sizing: border-box; }
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+  }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      background: #0a0a0a;
-      color: #fff;
-      font-family: 'PP Pangram Sans', Arial, sans-serif;
-      overflow-x: hidden;
-    }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000000; /* чорний фон */
+    color: rgb(255, 167, 34);
+    font-family: 'PP Pangram Sans', Arial, sans-serif;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
 
-    .schedule-wrapper {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
+  .ritz.grid-container {
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
 
-    /* ── Day badge top bar ── */
-    .day-bar {
-      background: #f5d800;
-      color: #000;
-      font-weight: 700;
-      text-align: center;
-      font-size: clamp(0.7em, 3vw, 1em);
-      padding: clamp(6px, 1.5vw, 10px) 12px;
-      letter-spacing: 0.08em;
-      flex-shrink: 0;
-    }
+  .ritz .waffle-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
 
-    /* ── Header ── */
-    .schedule-header {
-      display: flex;
-      flex-shrink: 0;
-      background: #0a0a0a;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      padding: 8px 4px 0;
-      gap: 4px;
-    }
+  .ritz .waffle {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+    white-space: normal;
+  }
 
-    .time-gutter-header {
-      width: 52px;
-      flex-shrink: 0;
-    }
+  /* Приховуємо колонку з номерами рядків */
+  .ritz .waffle th.row-headers-background,
+  .ritz .waffle td.row-headers-background {
+    display: none;
+  }
 
-    .stage-header-wrap {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 0;
-    }
+  .ritz .waffle th,
+  .ritz .waffle td {
+    border: 2px solid rgb(255, 136, 25);
+    padding: 6px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    max-width: none;
+  }
 
-    .stage-header-inner {
-      display: inline-flex;
-      flex-direction: column;
-      align-items: stretch;
-    }
+  .current-time {
+    background-color: rgba(176, 6, 0, 0.49);
+  }
 
-    .stage-flames {
-      line-height: 1;
-      margin-bottom: -3px;
-    }
+  .highlight {
+    background-color: rgba(255, 21, 0, 0.3);
+    transition: background-color 0.3s ease;
+  }
 
-    .stage-flames img {
-      display: block;
-      width: auto;
-      height: 40px;
-    }
+  .manual-highlight {
+    background-color: rgba(255, 26, 26, 0.341);
+    transition: background-color 0.3s ease;
+  }
 
-    @media (max-width: 600px) {
-      .stage-flames img {
-        height: clamp(24px, 7vw, 40px);
-      }
-    }
+  .artist-highlight {
+    background-color: rgba(255, 100, 34, 0.234);
+    outline: 1px solid rgba(255, 165, 0, 0.7);
+    transition: background-color 0.3s ease;
+  }
 
-    .stage-header {
-      text-align: center;
-      font-weight: 700;
-      font-size: clamp(0.65em, 2.2vw, 0.95em);
-      padding: 6px 8px;
-      background: #222;
-      color: #fff;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
+  .artist-highlight.active {
+    background-color: rgba(255, 26, 26, 0.341);
+    font-weight: 600;
+  }
 
-    .stage-header-wrap:nth-child(2) .stage-header {
-      clip-path: polygon(0% 0%, 96% 0%, 100% 100%, 4% 100%);
-    }
-    .stage-header-wrap:nth-child(3) .stage-header {
-      clip-path: polygon(4% 0%, 100% 0%, 96% 100%, 0% 100%);
-    }
-    .stage-header-wrap:nth-child(4) .stage-header {
-      clip-path: polygon(2% 0%, 98% 0%, 94% 100%, 6% 100%);
-    }
+  /* Новий клас для жирного часу при виборі рядка часу */
+  .time-highlight-active {
+    font-weight: 600;
+    color: orange;
+  }
+</style>
 
-    /* ── Scrollable body ── */
-    .schedule-scroll {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
 
-    .schedule-body {
-      position: relative;
-      display: flex;
-      height: 960px;
-      padding-top: 8px;
-    }
-
-    /* ── Time gutter ── */
-    .time-gutter {
-      width: 52px;
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .time-label {
-      position: absolute;
-      right: 6px;
-      font-size: 0.7em;
-      color: rgb(255, 167, 34);
-      transform: translateY(-50%);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      font-weight: 600;
-    }
-
-    .time-label.time-active {
-      color: #fff;
-      font-weight: 700;
-    }
-
-    /* ── Grid lines ── */
-    .grid-lines {
-      position: absolute;
-      left: 52px;
-      right: 0;
-      top: 0;
-      bottom: 0;
-      pointer-events: none;
-    }
-
-    .grid-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: rgba(255,136,25,0.15);
-    }
-
-    /* ── Stage columns ── */
-    .stage-column {
-      flex: 1;
-      position: relative;
-    }
-
-    /* ── Artist cards ── */
-    .artist-card {
-      position: absolute;
-      left: 3px;
-      right: 3px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 4px;
-      padding: 5px 7px;
-      cursor: pointer;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 2px;
-    }
-
-    .artist-card:hover {
-      background: rgba(255,255,255,0.1);
-    }
-
-    .artist-card.highlighted {
-      background: rgba(255, 167, 34, 0.15);
-      border-color: rgba(255, 167, 34, 0.5);
-    }
-
-    .artist-card.active {
-      background: rgba(255, 167, 34, 0.25);
-      border-color: rgb(255, 167, 34);
-    }
-
-    .card-time {
-      font-size: clamp(0.55em, 2vw, 0.65em);
-      color: rgb(255, 167, 34);
-      font-weight: 600;
-    }
-
-    .card-name {
-      font-size: clamp(0.6em, 2.6vw, 0.82em);
-      font-weight: 700;
-      line-height: 1.2;
-      color: #fff;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      white-space: normal;
-    }
-
-    .card-b2b {
-      font-size: 0.75em;
-      color: rgb(255, 167, 34);
-      font-weight: 600;
-      letter-spacing: 0.05em;
-    }
-
-    .card-duration {
-      font-size: 0.6em;
-      color: rgba(255,255,255,0.35);
-    }
-
-    /* ── Current time line ── */
-    .current-time-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: rgb(255, 167, 34);
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    .current-time-line::before {
-      content: '';
-      position: absolute;
-      left: -4px;
-      top: -4px;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgb(255, 167, 34);
-    }
-  </style>
 </head>
 <body>
-  <div class="schedule-wrapper">
-    <div class="day-bar">DAY 1 &nbsp;·&nbsp; 13 ЧЕРВНЯ</div>
-    <div class="schedule-header">
-      <div class="time-gutter-header"></div>
-      <div class="stage-header-wrap">
-      <div class="stage-header-inner">
-        <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
-        <div class="stage-header">АНГАР</div>
-      </div>
-    </div>
-<div class="stage-header-wrap">
-      <div class="stage-header-inner">
-        <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
-        <div class="stage-header">ДВІР</div>
-      </div>
-    </div>
-<div class="stage-header-wrap">
-      <div class="stage-header-inner">
-        <div class="stage-flames"><img src="photo-output.png" alt="🔥"></div>
-        <div class="stage-header">KELLER</div>
-      </div>
-    </div>
-    </div>
-    <div class="schedule-scroll" id="scroll">
-      <div class="schedule-body">
-        <div class="time-gutter">
-          <div class="time-label" style="top:0px;transform:translateY(4px)">14:00</div>
-<div class="time-label" style="top:60px;transform:translateY(-50%)">14:30</div>
-<div class="time-label" style="top:120px;transform:translateY(-50%)">15:00</div>
-<div class="time-label" style="top:180px;transform:translateY(-50%)">15:30</div>
-<div class="time-label" style="top:240px;transform:translateY(-50%)">16:00</div>
-<div class="time-label" style="top:300px;transform:translateY(-50%)">16:30</div>
-<div class="time-label" style="top:360px;transform:translateY(-50%)">17:00</div>
-<div class="time-label" style="top:420px;transform:translateY(-50%)">17:30</div>
-<div class="time-label" style="top:480px;transform:translateY(-50%)">18:00</div>
-<div class="time-label" style="top:540px;transform:translateY(-50%)">18:30</div>
-<div class="time-label" style="top:600px;transform:translateY(-50%)">19:00</div>
-<div class="time-label" style="top:660px;transform:translateY(-50%)">19:30</div>
-<div class="time-label" style="top:720px;transform:translateY(-50%)">20:00</div>
-<div class="time-label" style="top:780px;transform:translateY(-50%)">20:30</div>
-<div class="time-label" style="top:840px;transform:translateY(-50%)">21:00</div>
-<div class="time-label" style="top:900px;transform:translateY(-50%)">21:30</div>
-<div class="time-label" style="top:960px;transform:translateY(-50%)">22:00</div>
-
-        </div>
-        <div class="grid-lines">
-          
-        </div>
-        <div class="stage-column"><div class="artist-card" id="act-0-0" data-start="840" data-end="930" style="top:0px;height:180px">
-  <span class="card-time">14:00</span>
-  <span class="card-name">NATIVE OUTSIDER</span>
-  <span class="card-duration">1 год 30 хв</span>
-</div>
-<div class="artist-card" id="act-0-1" data-start="930" data-end="990" style="top:180px;height:120px">
-  <span class="card-time">15:30</span>
-  <span class="card-name">SOMINARYST</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-0-2" data-start="990" data-end="1030" style="top:300px;height:80px">
-  <span class="card-time">16:30</span>
-  <span class="card-name">СКАЛО (LIVE)</span>
-  <span class="card-duration">40 хв</span>
-</div>
-<div class="artist-card" id="act-0-3" data-start="1030" data-end="1070" style="top:380px;height:80px">
-  <span class="card-time">17:10</span>
-  <span class="card-name">SPORTCAFÉ</span>
-  <span class="card-duration">40 хв</span>
-</div>
-<div class="artist-card" id="act-0-4" data-start="1070" data-end="1120" style="top:460px;height:100px">
-  <span class="card-time">17:50</span>
-  <span class="card-name">ҐРУНТ ПАЛАЄ</span>
-  <span class="card-duration">50 хв</span>
-</div>
-<div class="artist-card" id="act-0-5" data-start="1120" data-end="1160" style="top:560px;height:80px">
-  <span class="card-time">18:40</span>
-  <span class="card-name">BOANTHROPY</span>
-  <span class="card-duration">40 хв</span>
-</div>
-<div class="artist-card" id="act-0-6" data-start="1160" data-end="1260" style="top:640px;height:200px">
-  <span class="card-time">19:20</span>
-  <span class="card-name">DJ MELL G</span>
-  <span class="card-duration">1 год 40 хв</span>
-</div>
-<div class="artist-card" id="act-0-7" data-start="1260" data-end="1320" style="top:840px;height:120px">
-  <span class="card-time">21:00</span>
-  <span class="card-name">IVAN BIOS</span>
-  <span class="card-duration">1 год</span>
-</div>
-</div>
-<div class="stage-column"><div class="artist-card" id="act-1-0" data-start="840" data-end="930" style="top:0px;height:180px">
-  <span class="card-time">14:00</span>
-  <span class="card-name">KLIM</span>
-  <span class="card-duration">1 год 30 хв</span>
-</div>
-<div class="artist-card" id="act-1-1" data-start="930" data-end="1020" style="top:180px;height:180px">
-  <span class="card-time">15:30</span>
-  <span class="card-name">DARIALISM</span>
-  <span class="card-duration">1 год 30 хв</span>
-</div>
-<div class="artist-card" id="act-1-2" data-start="1020" data-end="1080" style="top:360px;height:120px">
-  <span class="card-time">17:00</span>
-  <span class="card-name">DEYS RUDE QUARTET</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-1-3" data-start="1080" data-end="1160" style="top:480px;height:160px">
-  <span class="card-time">18:00</span>
-  <span class="card-name">HANNA<br><span class="card-b2b">b2b</span><br>SHULTS.SASHAA</span>
-  <span class="card-duration">1 год 20 хв</span>
-</div>
-<div class="artist-card" id="act-1-4" data-start="1160" data-end="1200" style="top:640px;height:80px">
-  <span class="card-time">19:20</span>
-  <span class="card-name">BERLINER DÖNER</span>
-  <span class="card-duration">40 хв</span>
-</div>
-<div class="artist-card" id="act-1-5" data-start="1200" data-end="1260" style="top:720px;height:120px">
-  <span class="card-time">20:00</span>
-  <span class="card-name">ЗЛИПНІ</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-1-6" data-start="1260" data-end="1320" style="top:840px;height:120px">
-  <span class="card-time">21:00</span>
-  <span class="card-name">CRASHBOOMBANG</span>
-  <span class="card-duration">1 год</span>
-</div>
-</div>
-<div class="stage-column"><div class="artist-card" id="act-2-0" data-start="960" data-end="1020" style="top:240px;height:120px">
-  <span class="card-time">16:00</span>
-  <span class="card-name">DEMIAN FERIY (LIVE)</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-2-1" data-start="1020" data-end="1065" style="top:360px;height:90px">
-  <span class="card-time">17:00</span>
-  <span class="card-name">НЕВТОМА</span>
-  <span class="card-duration">45 хв</span>
-</div>
-<div class="artist-card" id="act-2-2" data-start="1065" data-end="1110" style="top:450px;height:90px">
-  <span class="card-time">17:45</span>
-  <span class="card-name">ВИСТАВКА ДИСТОРШН</span>
-  <span class="card-duration">45 хв</span>
-</div>
-<div class="artist-card" id="act-2-3" data-start="1110" data-end="1170" style="top:540px;height:120px">
-  <span class="card-time">18:30</span>
-  <span class="card-name">SYMONENKO (LIVE)</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-2-4" data-start="1170" data-end="1230" style="top:660px;height:120px">
-  <span class="card-time">19:30</span>
-  <span class="card-name">MAAT (LIVE)</span>
-  <span class="card-duration">1 год</span>
-</div>
-<div class="artist-card" id="act-2-5" data-start="1230" data-end="1320" style="top:780px;height:180px">
-  <span class="card-time">20:30</span>
-  <span class="card-name">JANE<br><span class="card-b2b">b2b</span><br>BÉLLIS</span>
-  <span class="card-duration">1 год 30 хв</span>
-</div>
-</div>
-
-        <div class="current-time-line" id="current-time-line" style="display:none"></div>
-      </div>
-    </div>
+  <div class="ritz grid-container" dir="ltr">
+    <div class="waffle-container">
+     <table class="waffle" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr style="height: 55px">
+                <th id="760347558R0" style="height: 55px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 55px">1</div>
+                </th>
+                <td class="s0"></td>
+                <td class="s0">Двір</td>
+                <td class="s0">Ангар</td>
+                <td class="s0">Парковка</td>
+                <td class="s0">Дача</td>
+                <td class="s0">Keller</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R1" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">2</div>
+                </th>
+                <td class="s1">14:00</td>
+                <td class="s2" rowspan="3"></td>
+                <td class="s2" rowspan="3"></td>
+                <td class="s2" rowspan="4"></td>
+                <td class="s3" rowspan="2">35STREETGHOSTS</td>
+                <td class="s2" rowspan="3"></td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R2" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">3</div>
+                </th>
+                <td class="s1">14:30</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R3" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">4</div>
+                </th>
+                <td class="s1">15:00</td>
+                <td class="s4">KLIM</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R4" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">5</div>
+                </th>
+                <td class="s1">15:30</td>
+                <td class="s3" rowspan="2">ANNA SOLOVEI</td>
+                <td class="s3" rowspan="2">ХАRАKТЕR</td>
+                <td class="s4">ДОВГИЙ ПЕС</td>
+                <td class="s3" rowspan="2">KONSTANTIN POVEDA (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R5" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">6</div>
+                </th>
+                <td class="s1">16:00</td>
+                <td class="s3">MIST TOWER</td>
+                <td class="s4">LUCAS BIRD (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R6" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">7</div>
+                </th>
+                <td class="s1">16:30</td>
+                <td class="s3" rowspan="2">BORIS MOGYLEVSKIY</td>
+                <td class="s3" rowspan="2">NATIVE OUTSIDER (LIVE)</td>
+                <td class="s3" rowspan="2">СОНЯЧНІ КОТИКИ</td>
+                <td class="s3" rowspan="2">GAPON</td>
+                <td class="s3">EMBRION BORMANA (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R7" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">8</div>
+                </th>
+                <td class="s1">17:00</td>
+                <td class="s3" rowspan="2">BODRO</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R8" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">9</div>
+                </th>
+                <td class="s1">17:30</td>
+                <td class="s3">DEYS RUDE QUARTET</td>
+                <td class="s3" rowspan="2">SYMONENKO (LIVE)</td>
+                <td class="s3">SPORTCAFE</td>
+                <td class="s3" rowspan="2">RADIANT FUTUR (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R9" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">10</div>
+                </th>
+                <td class="s1">18:00</td>
+                <td class="s3" rowspan="2">ЗЛИПНІ</td>
+                <td class="s3">ДІЛО ДРЯНЬ</td>
+                <td class="s3" rowspan="2">HIXTO (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R10" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">11</div>
+                </th>
+                <td class="s1">18:30</td>
+                <td class="s3" rowspan="2">VITALII SHEVCHENKO</td>
+                <td class="s3" rowspan="2">RUSIIICK X MISHA SUBSTANCE</td>
+                <td class="s3" rowspan="2">YANSIMA</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R11" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">12</div>
+                </th>
+                <td class="s1">19:00</td>
+                <td class="s3" rowspan="2">THE ARTISTIC RATS</td>
+                <td class="s3" rowspan="2">LOSTLOJIC B2B RYNDIN</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R12" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">13</div>
+                </th>
+                <td class="s1">19:30</td>
+                <td class="s3" rowspan="2">PLEDOV B2B CANTRUST</td>
+                <td class="s3">AFTERPHASE PROJECT</td>
+                <td class="s3" rowspan="2">BOGDAN ZAIETS (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R13" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">14</div>
+                </th>
+                <td class="s1">20:00</td>
+                <td class="s3" rowspan="2">SAD NOVELIST</td>
+                <td class="s3">SECOND STRIKE</td>
+                <td class="s3" rowspan="2">IGOR ZADOROZHNYI</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R14" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">15</div>
+                </th>
+                <td class="s1">20:30</td>
+                <td class="s3" rowspan="4">RECID B2B JANE</td>
+                <td class="s3" rowspan="2">FIRST TO DIE</td>
+                <td class="s3" rowspan="4">HANNA B2B TAQADDAM</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R15" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">16</div>
+                </th>
+                <td class="s1">21:00</td>
+                <td class="s3" rowspan="3">RENIE CARES</td>
+                <td class="s3" rowspan="3">JMDASHA</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R16" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">17</div>
+                </th>
+                <td class="s1">21:30</td>
+                <td class="s3" rowspan="2">TRUE TOUGH</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R17" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">18</div>
+                </th>
+                <td class="s1">22:00</td>
+            </tr>
+        </tbody>
+    </table>
   </div>
+    </div>
 
-  <script>
-    const timeZone = 'Europe/Kyiv';
-    const scheduleDay = 13;
-    const scheduleMonth = 6;
-    const scheduleYear = 2026;
-    const startMin = 840;
-    const pxPerMin = 2;
-    const allActs = [{"id":"act-0-0","start":840,"end":930},{"id":"act-0-1","start":930,"end":990},{"id":"act-0-2","start":990,"end":1030},{"id":"act-0-3","start":1030,"end":1070},{"id":"act-0-4","start":1070,"end":1120},{"id":"act-0-5","start":1120,"end":1160},{"id":"act-0-6","start":1160,"end":1260},{"id":"act-0-7","start":1260,"end":1320},{"id":"act-1-0","start":840,"end":930},{"id":"act-1-1","start":930,"end":1020},{"id":"act-1-2","start":1020,"end":1080},{"id":"act-1-3","start":1080,"end":1160},{"id":"act-1-4","start":1160,"end":1200},{"id":"act-1-5","start":1200,"end":1260},{"id":"act-1-6","start":1260,"end":1320},{"id":"act-2-0","start":960,"end":1020},{"id":"act-2-1","start":1020,"end":1065},{"id":"act-2-2","start":1065,"end":1110},{"id":"act-2-3","start":1110,"end":1170},{"id":"act-2-4","start":1170,"end":1230},{"id":"act-2-5","start":1230,"end":1320}];
+<script>
+  // === CONFIGURATION ===
+  const timeZone = 'Europe/Kyiv';
+  const scheduleDay = 14;
 
+  const pageLoadTime = new Date(new Date().toLocaleString('en-US', { timeZone }));
+  const day = pageLoadTime.getDate();
+  const month = pageLoadTime.getMonth() + 1;
+  const year = pageLoadTime.getFullYear();
+  const isFestivalDay = day === scheduleDay && month === 6 && year === 2025;
+
+  function getCurrentTimeRoundedHalfHour() {
     const now = new Date(new Date().toLocaleString('en-US', { timeZone }));
-    const isFestivalDay =
-      now.getDate() === scheduleDay &&
-      now.getMonth() + 1 === scheduleMonth &&
-      now.getFullYear() === scheduleYear;
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const roundedMinutes = minutes < 30 ? '00' : '30';
+    return `${hours.toString().padStart(2, '0')}:${roundedMinutes}`;
+  }
 
-    function getCurrentMinutes() {
-      const t = new Date(new Date().toLocaleString('en-US', { timeZone }));
-      return t.getHours() * 60 + t.getMinutes();
-    }
+  function clearAllHighlights() {
+    document.querySelectorAll('.manual-highlight, .artist-highlight, .active, .time-highlight-active')
+      .forEach(cell => cell.classList.remove('manual-highlight', 'artist-highlight', 'active', 'time-highlight-active'));
 
-    function minutesToTop(min) {
-      return (min - startMin) * pxPerMin;
-    }
+    document.querySelectorAll('.highlight:not(.auto-highlight)').forEach(cell => {
+      cell.classList.remove('highlight');
+      cell.style.fontWeight = '';
+    });
+  }
 
-    function updateCurrentTimeLine() {
-      const line = document.getElementById('current-time-line');
-      const min = getCurrentMinutes();
-      if (min < startMin || min > 1320) {
-        line.style.display = 'none';
-        return;
-      }
-      line.style.display = 'block';
-      line.style.top = minutesToTop(min) + 'px';
-    }
+  function highlightCurrentTime() {
+    document.querySelectorAll('.auto-highlight').forEach(cell => {
+      cell.classList.remove('highlight', 'auto-highlight');
+      cell.style.fontWeight = '';
+    });
 
-    let activeTimeLabel = null;
+    const currentTime = getCurrentTimeRoundedHalfHour();
+    const hour = parseInt(currentTime.split(':')[0], 10);
+    if (hour < 14 || hour >= 22) return;
 
-    function clearHighlights() {
-      document.querySelectorAll('.artist-card').forEach(c => {
-        c.classList.remove('highlighted', 'active');
-      });
-      if (activeTimeLabel) {
-        activeTimeLabel.classList.remove('time-active');
-        activeTimeLabel = null;
-      }
-    }
+    const targetCell = Array.from(document.querySelectorAll('.s1'))
+      .find(cell => cell.textContent.trim() === currentTime);
 
-    function highlightConcurrent(clickedCard) {
-      const start = parseInt(clickedCard.dataset.start);
-      const end = parseInt(clickedCard.dataset.end);
+    if (targetCell) {
+      const table = document.querySelector('.waffle');
+      const rows = Array.from(table.rows);
+      const rowIndex = rows.indexOf(targetCell.parentElement);
 
-      document.querySelectorAll('.artist-card').forEach(card => {
-        const s = parseInt(card.dataset.start);
-        const e = parseInt(card.dataset.end);
-        if (!(e <= start || s >= end)) card.classList.add('highlighted');
-      });
+      const applyHighlight = (cell) => {
+        if (getComputedStyle(cell).display !== 'none') {
+          cell.classList.add('highlight', 'auto-highlight');
+          cell.style.fontWeight = 'bold';
+        }
+      };
 
-      clickedCard.classList.remove('highlighted');
-      clickedCard.classList.add('active');
-    }
+      rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
 
-    function highlightAtTime(timeMin, label) {
-      document.querySelectorAll('.artist-card').forEach(card => {
-        const s = parseInt(card.dataset.start);
-        const e = parseInt(card.dataset.end);
-        if (timeMin >= s && timeMin < e) card.classList.add('highlighted');
-      });
-      label.classList.add('time-active');
-      activeTimeLabel = label;
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (isFestivalDay) {
-        updateCurrentTimeLine();
-        setInterval(updateCurrentTimeLine, 30000);
-
-        const min = getCurrentMinutes();
-        const top = minutesToTop(min);
-        document.getElementById('scroll').scrollTop = Math.max(0, top - 150);
-      }
-
-      document.querySelectorAll('.artist-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isActive = card.classList.contains('active');
-          clearHighlights();
-          if (!isActive) highlightConcurrent(card);
-        });
-      });
-
-      document.querySelectorAll('.time-label').forEach(label => {
-        label.addEventListener('click', (e) => {
-          e.stopPropagation();
-          const isActive = label.classList.contains('time-active');
-          clearHighlights();
-          if (!isActive) {
-            const [h, m] = label.textContent.split(':').map(Number);
-            highlightAtTime(h * 60 + m, label);
+      rows.forEach((row, rIdx) => {
+        Array.from(row.cells).forEach(cell => {
+          const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+          const start = rIdx;
+          const end = rIdx + rowspan - 1;
+          if (rowIndex >= start && rowIndex <= end) {
+            applyHighlight(cell);
           }
         });
       });
+    }
+  }
 
-      document.addEventListener('click', () => clearHighlights());
+  function highlightManualTimeRow(clickedCell) {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+    const rowIndex = rows.indexOf(clickedCell.parentElement);
+
+    const applyHighlight = (cell) => {
+      if (getComputedStyle(cell).display !== 'none') {
+        cell.classList.add('manual-highlight');
+      }
+    };
+
+    rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
+
+    rows.forEach((row, rIdx) => {
+      Array.from(row.cells).forEach(cell => {
+        const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+        const start = rIdx;
+        const end = rIdx + rowspan - 1;
+        if (rowIndex >= start && rowIndex <= end) {
+          applyHighlight(cell);
+        }
+      });
     });
-  </script>
+
+    clickedCell.classList.add('time-highlight-active');
+  }
+
+  function highlightArtistRow(clickedCell) {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+    const clickedRowIndex = rows.indexOf(clickedCell.parentElement);
+    const clickedRowspan = parseInt(clickedCell.getAttribute('rowspan') || '1');
+    const clickedStart = clickedRowIndex;
+    const clickedEnd = clickedRowIndex + clickedRowspan - 1;
+
+    clickedCell.classList.add('active');
+
+    document.querySelectorAll('.waffle td:not(.s1)').forEach(cell => {
+      const cellRow = rows.indexOf(cell.parentElement);
+      const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+      const cellStart = cellRow;
+      const cellEnd = cellRow + rowspan - 1;
+
+      const overlap = !(cellEnd < clickedStart || cellStart > clickedEnd);
+      if (overlap) {
+        cell.classList.add('artist-highlight');
+      }
+    });
+
+    for (let r = clickedStart; r <= clickedEnd; r++) {
+      const timeCell = rows[r].querySelector('.s1');
+      if (timeCell) timeCell.classList.add('artist-highlight');
+    }
+  }
+
+  // === INITIALIZATION ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+
+    if (isFestivalDay) {
+      highlightCurrentTime();
+      setInterval(highlightCurrentTime, 30000);
+    }
+
+    // === Add manual click handlers ===
+    rows.forEach((row, rowIndex) => {
+      // Пропускаємо перший рядок (назви сцен)
+      if (rowIndex === 0) return;
+
+      row.querySelectorAll('td').forEach(cell => {
+        // TIME CELLS
+        if (cell.classList.contains('s1')) {
+          cell.addEventListener('click', () => {
+            const isAlreadyActive = cell.classList.contains('time-highlight-active');
+            clearAllHighlights();
+            if (!isAlreadyActive) highlightManualTimeRow(cell);
+          });
+        } else {
+          // ARTIST CELLS
+          if (cell.textContent.trim() !== '') {
+            cell.addEventListener('click', () => {
+              const isAlreadyActive = cell.classList.contains('active');
+              clearAllHighlights();
+              if (!isAlreadyActive) highlightArtistRow(cell);
+            });
+          }
+        }
+      });
+    });
+  });
+</script>
 </body>
 </html>

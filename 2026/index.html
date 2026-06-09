@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Бруд Пес — Розклад 2025</title>
+  <style>
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('../2025/PPPangramSans-Semibold.otf') format('opentype');
+      font-weight: 600;
+    }
+    @font-face {
+      font-family: 'PP Pangram Sans';
+      src: url('../2025/PPPangramSans-Bold.otf') format('opentype');
+      font-weight: 700;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: 'PP Pangram Sans', Arial, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    .bg {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url('brudpes-festival-atmosphere.webp') no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 60px;
+      gap: 24px;
+    }
+
+    h1 {
+      font-weight: 700;
+      font-size: clamp(1.4em, 6vw, 2.4em);
+      letter-spacing: 0.1em;
+      text-align: center;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    /* ── Day buttons ── */
+    .day-buttons {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .day-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      background: #f5d800;
+      color: #000;
+      font-weight: 700;
+      font-size: clamp(1em, 4vw, 1.3em);
+      padding: 14px 32px;
+      letter-spacing: 0.08em;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .day-btn span {
+      font-size: 0.55em;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      margin-top: 2px;
+      opacity: 0.75;
+    }
+
+    .day-btn:hover {
+      background: #fff;
+    }
+
+    /* ── Collapsible blocks ── */
+    .collapse-block {
+      width: 100%;
+      max-width: 480px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(0,0,0,0.45);
+    }
+
+    .collapse-title {
+      font-weight: 700;
+      font-size: 0.85em;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .collapse-title::after {
+      content: '▾';
+      transition: transform 0.3s;
+    }
+
+    .collapse-block.open .collapse-title::after {
+      transform: rotate(180deg);
+    }
+
+    .collapse-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .collapse-block.open .collapse-content {
+      max-height: 2000px;
+    }
+
+    /* ── Hint content ── */
+    .hint-inner {
+      font-size: 0.82em;
+      line-height: 1.6;
+      padding: 0 16px 14px;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .hint-inner ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .hint-inner li {
+      margin-bottom: 6px;
+    }
+
+    /* ── Map content ── */
+    .map-inner img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <h1>Розклад фестивалю</h1>
+
+    <div class="day-buttons">
+      <a href="день1.html" class="day-btn">
+        ДЕНЬ 1
+        <span>13 ЧЕРВНЯ</span>
+      </a>
+      <a href="день2.html" class="day-btn">
+        ДЕНЬ 2
+        <span>14 ЧЕРВНЯ</span>
+      </a>
+    </div>
+
+    <div class="collapse-block" id="map-block">
+      <div class="collapse-title" onclick="toggle('map-block')">Мапа фестивалю</div>
+      <div class="collapse-content">
+        <div class="map-inner">
+          <img src="mapa.jpg" alt="Мапа фестивалю">
+        </div>
+      </div>
+    </div>
+
+    <div class="collapse-block" id="hint-block">
+      <div class="collapse-title" onclick="toggle('hint-block')">Як це працює?</div>
+      <div class="collapse-content">
+        <div class="hint-inner">
+          <ul>
+            <li>Автоматичне підсвічування поточного таймслоту в день фестивалю.</li>
+            <li>Клік на артиста підсвічує всіх, хто грає одночасно з ним.</li>
+            <li>Клік на час підсвічує всіх артистів у цей момент.</li>
+            <li>Повторний клік або тап на порожнє місце — скидає підсвічування.</li>
+            <li>Можлива похибка в часі виступів ±10 хвилин.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggle(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+  </script>
+</body>
+</html>
