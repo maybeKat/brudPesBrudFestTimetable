@@ -621,7 +621,7 @@
 
     // ── Notifications ──
     // ── Favourites ──
-    const FAV_KEY = `bpbf_fav_${scheduleYear}_${scheduleMonth}_${scheduleDay}`;
+    const FAV_KEY = `bpbf_fav_${scheduleYear}_day2`;
 
     function getFavs() {
       try { return new Set(JSON.parse(localStorage.getItem(FAV_KEY) || '[]')); } catch { return new Set(); }
