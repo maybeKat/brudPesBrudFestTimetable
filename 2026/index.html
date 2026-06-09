@@ -368,7 +368,9 @@
       [1, 2].forEach(d => {
         try {
           const items = JSON.parse(localStorage.getItem(FAV_KEYS[d]) || '[]');
-          items.forEach(f => all.push({ ...f, day: d }));
+          items.forEach(f => {
+            if (f && typeof f === 'object' && f.id && f.name) all.push({ ...f, day: d });
+          });
         } catch {}
       });
       all.sort((a, b) => a.day - b.day || a.startMin - b.startMin);
@@ -428,6 +430,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', updateFavCount);
+    window.addEventListener('pageshow', updateFavCount);
+    window.addEventListener('focus', updateFavCount);
   </script>
 </body>
 </html>
