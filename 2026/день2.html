@@ -627,7 +627,9 @@
       try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
     }
     function saveSubs(subs) { localStorage.setItem(STORAGE_KEY, JSON.stringify(subs)); }
-    function isSubscribed(id) { return getSubs().some(s => s.id === id); }
+    function isSubscribed(id) {
+      return getSubs().some(s => s.id === id && s.day === scheduleDay && s.month === scheduleMonth && s.year === scheduleYear);
+    }
 
     function scheduleNotification(sub) {
       const notifyMin = sub.startMin - 10;
@@ -648,7 +650,7 @@
     const HEART_SVG = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
 
     let toastTimer;
-    function showToast(name, added) {
+    function showToast(name, added, withNotif = true) {
       let toast = document.getElementById('notify-toast');
       if (!toast) {
         toast = document.createElement('div');
@@ -656,9 +658,13 @@
         toast.className = 'notify-toast';
         document.body.appendChild(toast);
       }
-      toast.innerHTML = added
-        ? `<strong>${name}</strong> додано в обране.<br>За 10 хв до виступу отримаєте сповіщення.`
-        : `<strong>${name}</strong> видалено з обраного.`;
+      if (added) {
+        toast.innerHTML = withNotif
+          ? `<strong>${name}</strong> додано в обране.<br>За 10 хв до виступу отримаєте сповіщення.`
+          : `<strong>${name}</strong> додано в обране.`;
+      } else {
+        toast.innerHTML = `<strong>${name}</strong> видалено з обраного.`;
+      }
       clearTimeout(toastTimer);
       toast.classList.add('show');
       toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
@@ -670,26 +676,31 @@
     }
 
     async function toggleSub(id, name, startMin, stage, timeStr) {
-      const perm = await Notification.requestPermission();
-      if (perm !== 'granted') return;
       let subs = getSubs();
-      if (subs.some(s => s.id === id)) {
-        subs = subs.filter(s => s.id !== id);
-        saveSubs(subs);
+      const isSub = s => s.id === id && s.day === scheduleDay && s.month === scheduleMonth && s.year === scheduleYear;
+      if (subs.some(isSub)) {
+        saveSubs(subs.filter(s => !isSub(s)));
         updateHeart(id, false);
         showToast(name, false);
       } else {
         const sub = { id, name, startMin, stage, timeStr, day: scheduleDay, month: scheduleMonth, year: scheduleYear };
-        subs.push(sub);
-        saveSubs(subs);
+        saveSubs([...subs, sub]);
         updateHeart(id, true);
-        scheduleNotification(sub);
-        showToast(name, true);
+        if ('Notification' in window) {
+          const perm = await Notification.requestPermission();
+          if (perm === 'granted') {
+            scheduleNotification(sub);
+            showToast(name, true, true);
+          } else {
+            showToast(name, true, false);
+          }
+        } else {
+          showToast(name, true, false);
+        }
       }
     }
 
     function initNotifications() {
-      if (!('Notification' in window)) return;
       if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => {});
 
       document.querySelectorAll('.artist-card').forEach(card => {
@@ -710,7 +721,7 @@
         card.appendChild(btn);
       });
 
-      getSubs().forEach(scheduleNotification);
+      if ('Notification' in window) getSubs().forEach(scheduleNotification);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
