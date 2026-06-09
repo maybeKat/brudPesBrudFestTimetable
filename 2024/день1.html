@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Розклад день 1</title>
+<!--   <link type="text/css" rel="stylesheet" href="sheet.css"> -->
+ <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<style>
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Semibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'PP Pangram Sans';
+    src: url('PPPangramSans-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000000; /* чорний фон */
+    color: rgb(255, 167, 34);
+    font-family: 'PP Pangram Sans', Arial, sans-serif;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .ritz.grid-container {
+    height: 100vh;
+    max-width: 100vw;
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+  }
+
+  .ritz .waffle-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .ritz .waffle {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+    white-space: normal;
+  }
+
+  /* Приховуємо колонку з номерами рядків */
+  .ritz .waffle th.row-headers-background,
+  .ritz .waffle td.row-headers-background {
+    display: none;
+  }
+
+  .ritz .waffle th,
+  .ritz .waffle td {
+    border: 2px solid rgb(255, 136, 25);
+    padding: 6px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    max-width: none;
+  }
+
+  .current-time {
+    background-color: rgba(176, 6, 0, 0.49);
+  }
+
+  .highlight {
+    background-color: rgba(255, 21, 0, 0.3);
+    transition: background-color 0.3s ease;
+  }
+
+  .manual-highlight {
+    background-color: rgba(255, 26, 26, 0.341);
+    transition: background-color 0.3s ease;
+  }
+
+  .artist-highlight {
+    background-color: rgba(255, 100, 34, 0.234);
+    outline: 1px solid rgba(255, 165, 0, 0.7);
+    transition: background-color 0.3s ease;
+  }
+
+  .artist-highlight.active {
+    background-color: rgba(255, 26, 26, 0.341);
+    font-weight: 600;
+  }
+
+  /* Новий клас для жирного часу при виборі рядка часу */
+  .time-highlight-active {
+    font-weight: 600;
+    color: orange;
+  }
+</style>
+
+
+</head>
+<body>
+  <div class="ritz grid-container" dir="ltr">
+    <div class="waffle-container">
+     <table class="waffle" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr style="height: 55px">
+                <th id="760347558R0" style="height: 55px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 55px">1</div>
+                </th>
+                <td class="s0"></td>
+                <td class="s0">Двір</td>
+                <td class="s0">Ангар</td>
+                <td class="s0">Парковка</td>
+                <td class="s0">Дача</td>
+                <td class="s0">Keller</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R1" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">2</div>
+                </th>
+                <td class="s1">14:00</td>
+                <td class="s2" rowspan="3"></td>
+                <td class="s2" rowspan="3"></td>
+                <td class="s2" rowspan="4"></td>
+                <td class="s3" rowspan="2">35STREETGHOSTS</td>
+                <td class="s2" rowspan="3"></td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R2" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">3</div>
+                </th>
+                <td class="s1">14:30</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R3" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">4</div>
+                </th>
+                <td class="s1">15:00</td>
+                <td class="s4">KLIM</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R4" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">5</div>
+                </th>
+                <td class="s1">15:30</td>
+                <td class="s3" rowspan="2">ANNA SOLOVEI</td>
+                <td class="s3" rowspan="2">ХАRАKТЕR</td>
+                <td class="s4">ДОВГИЙ ПЕС</td>
+                <td class="s3" rowspan="2">KONSTANTIN POVEDA (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R5" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">6</div>
+                </th>
+                <td class="s1">16:00</td>
+                <td class="s3">MIST TOWER</td>
+                <td class="s4">LUCAS BIRD (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R6" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">7</div>
+                </th>
+                <td class="s1">16:30</td>
+                <td class="s3" rowspan="2">BORIS MOGYLEVSKIY</td>
+                <td class="s3" rowspan="2">NATIVE OUTSIDER (LIVE)</td>
+                <td class="s3" rowspan="2">СОНЯЧНІ КОТИКИ</td>
+                <td class="s3" rowspan="2">GAPON</td>
+                <td class="s3">EMBRION BORMANA (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R7" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">8</div>
+                </th>
+                <td class="s1">17:00</td>
+                <td class="s3" rowspan="2">BODRO</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R8" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">9</div>
+                </th>
+                <td class="s1">17:30</td>
+                <td class="s3">DEYS RUDE QUARTET</td>
+                <td class="s3" rowspan="2">SYMONENKO (LIVE)</td>
+                <td class="s3">SPORTCAFE</td>
+                <td class="s3" rowspan="2">RADIANT FUTUR (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R9" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">10</div>
+                </th>
+                <td class="s1">18:00</td>
+                <td class="s3" rowspan="2">ЗЛИПНІ</td>
+                <td class="s3">ДІЛО ДРЯНЬ</td>
+                <td class="s3" rowspan="2">HIXTO (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R10" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">11</div>
+                </th>
+                <td class="s1">18:30</td>
+                <td class="s3" rowspan="2">VITALII SHEVCHENKO</td>
+                <td class="s3" rowspan="2">RUSIIICK X MISHA SUBSTANCE</td>
+                <td class="s3" rowspan="2">YANSIMA</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R11" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">12</div>
+                </th>
+                <td class="s1">19:00</td>
+                <td class="s3" rowspan="2">THE ARTISTIC RATS</td>
+                <td class="s3" rowspan="2">LOSTLOJIC B2B RYNDIN</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R12" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">13</div>
+                </th>
+                <td class="s1">19:30</td>
+                <td class="s3" rowspan="2">PLEDOV B2B CANTRUST</td>
+                <td class="s3">AFTERPHASE PROJECT</td>
+                <td class="s3" rowspan="2">BOGDAN ZAIETS (LIVE)</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R13" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">14</div>
+                </th>
+                <td class="s1">20:00</td>
+                <td class="s3" rowspan="2">SAD NOVELIST</td>
+                <td class="s3">SECOND STRIKE</td>
+                <td class="s3" rowspan="2">IGOR ZADOROZHNYI</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R14" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">15</div>
+                </th>
+                <td class="s1">20:30</td>
+                <td class="s3" rowspan="4">RECID B2B JANE</td>
+                <td class="s3" rowspan="2">FIRST TO DIE</td>
+                <td class="s3" rowspan="4">HANNA B2B TAQADDAM</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R15" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">16</div>
+                </th>
+                <td class="s1">21:00</td>
+                <td class="s3" rowspan="3">RENIE CARES</td>
+                <td class="s3" rowspan="3">JMDASHA</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R16" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">17</div>
+                </th>
+                <td class="s1">21:30</td>
+                <td class="s3" rowspan="2">TRUE TOUGH</td>
+            </tr>
+            <tr style="height: 20px">
+                <th id="760347558R17" style="height: 20px;" class="row-headers-background">
+                    <div class="row-header-wrapper" style="line-height: 20px">18</div>
+                </th>
+                <td class="s1">22:00</td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
+    </div>
+
+<script>
+  // === CONFIGURATION ===
+  const timeZone = 'Europe/Kyiv';
+  const scheduleDay = 14;
+
+  const pageLoadTime = new Date(new Date().toLocaleString('en-US', { timeZone }));
+  const day = pageLoadTime.getDate();
+  const month = pageLoadTime.getMonth() + 1;
+  const year = pageLoadTime.getFullYear();
+  const isFestivalDay = day === scheduleDay && month === 6 && year === 2025;
+
+  function getCurrentTimeRoundedHalfHour() {
+    const now = new Date(new Date().toLocaleString('en-US', { timeZone }));
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const roundedMinutes = minutes < 30 ? '00' : '30';
+    return `${hours.toString().padStart(2, '0')}:${roundedMinutes}`;
+  }
+
+  function clearAllHighlights() {
+    document.querySelectorAll('.manual-highlight, .artist-highlight, .active, .time-highlight-active')
+      .forEach(cell => cell.classList.remove('manual-highlight', 'artist-highlight', 'active', 'time-highlight-active'));
+
+    document.querySelectorAll('.highlight:not(.auto-highlight)').forEach(cell => {
+      cell.classList.remove('highlight');
+      cell.style.fontWeight = '';
+    });
+  }
+
+  function highlightCurrentTime() {
+    document.querySelectorAll('.auto-highlight').forEach(cell => {
+      cell.classList.remove('highlight', 'auto-highlight');
+      cell.style.fontWeight = '';
+    });
+
+    const currentTime = getCurrentTimeRoundedHalfHour();
+    const hour = parseInt(currentTime.split(':')[0], 10);
+    if (hour < 14 || hour >= 22) return;
+
+    const targetCell = Array.from(document.querySelectorAll('.s1'))
+      .find(cell => cell.textContent.trim() === currentTime);
+
+    if (targetCell) {
+      const table = document.querySelector('.waffle');
+      const rows = Array.from(table.rows);
+      const rowIndex = rows.indexOf(targetCell.parentElement);
+
+      const applyHighlight = (cell) => {
+        if (getComputedStyle(cell).display !== 'none') {
+          cell.classList.add('highlight', 'auto-highlight');
+          cell.style.fontWeight = 'bold';
+        }
+      };
+
+      rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
+
+      rows.forEach((row, rIdx) => {
+        Array.from(row.cells).forEach(cell => {
+          const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+          const start = rIdx;
+          const end = rIdx + rowspan - 1;
+          if (rowIndex >= start && rowIndex <= end) {
+            applyHighlight(cell);
+          }
+        });
+      });
+    }
+  }
+
+  function highlightManualTimeRow(clickedCell) {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+    const rowIndex = rows.indexOf(clickedCell.parentElement);
+
+    const applyHighlight = (cell) => {
+      if (getComputedStyle(cell).display !== 'none') {
+        cell.classList.add('manual-highlight');
+      }
+    };
+
+    rows[rowIndex].querySelectorAll('td, th').forEach(applyHighlight);
+
+    rows.forEach((row, rIdx) => {
+      Array.from(row.cells).forEach(cell => {
+        const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+        const start = rIdx;
+        const end = rIdx + rowspan - 1;
+        if (rowIndex >= start && rowIndex <= end) {
+          applyHighlight(cell);
+        }
+      });
+    });
+
+    clickedCell.classList.add('time-highlight-active');
+  }
+
+  function highlightArtistRow(clickedCell) {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+    const clickedRowIndex = rows.indexOf(clickedCell.parentElement);
+    const clickedRowspan = parseInt(clickedCell.getAttribute('rowspan') || '1');
+    const clickedStart = clickedRowIndex;
+    const clickedEnd = clickedRowIndex + clickedRowspan - 1;
+
+    clickedCell.classList.add('active');
+
+    document.querySelectorAll('.waffle td:not(.s1)').forEach(cell => {
+      const cellRow = rows.indexOf(cell.parentElement);
+      const rowspan = parseInt(cell.getAttribute('rowspan') || '1');
+      const cellStart = cellRow;
+      const cellEnd = cellRow + rowspan - 1;
+
+      const overlap = !(cellEnd < clickedStart || cellStart > clickedEnd);
+      if (overlap) {
+        cell.classList.add('artist-highlight');
+      }
+    });
+
+    for (let r = clickedStart; r <= clickedEnd; r++) {
+      const timeCell = rows[r].querySelector('.s1');
+      if (timeCell) timeCell.classList.add('artist-highlight');
+    }
+  }
+
+  // === INITIALIZATION ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('.waffle');
+    const rows = Array.from(table.rows);
+
+    if (isFestivalDay) {
+      highlightCurrentTime();
+      setInterval(highlightCurrentTime, 30000);
+    }
+
+    // === Add manual click handlers ===
+    rows.forEach((row, rowIndex) => {
+      // Пропускаємо перший рядок (назви сцен)
+      if (rowIndex === 0) return;
+
+      row.querySelectorAll('td').forEach(cell => {
+        // TIME CELLS
+        if (cell.classList.contains('s1')) {
+          cell.addEventListener('click', () => {
+            const isAlreadyActive = cell.classList.contains('time-highlight-active');
+            clearAllHighlights();
+            if (!isAlreadyActive) highlightManualTimeRow(cell);
+          });
+        } else {
+          // ARTIST CELLS
+          if (cell.textContent.trim() !== '') {
+            cell.addEventListener('click', () => {
+              const isAlreadyActive = cell.classList.contains('active');
+              clearAllHighlights();
+              if (!isAlreadyActive) highlightArtistRow(cell);
+            });
+          }
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>
