@@ -147,6 +147,127 @@
       display: block;
     }
 
+    /* ── Favourites button ── */
+    .fav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-family: 'PP Pangram Sans', Arial, sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.85em, 3.5vw, 1.1em);
+      letter-spacing: 0.08em;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .fav-btn:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+    .fav-btn svg { width: 18px; height: 18px; fill: #f5d800; flex-shrink: 0; }
+    .fav-count {
+      background: #f5d800;
+      color: #000;
+      font-size: 0.75em;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .fav-count.visible { display: flex; }
+
+    /* ── Favourites modal ── */
+    .fav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .fav-overlay.open { display: flex; }
+    .fav-modal {
+      background: #111;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid #f5d800;
+    }
+    .fav-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+    .fav-modal-title {
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .fav-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4em;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .fav-list {
+      overflow-y: auto;
+      padding: 12px 0;
+    }
+    .fav-empty {
+      padding: 32px 20px;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.85em;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+    .fav-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      gap: 12px;
+    }
+    .fav-item-left { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .fav-item-name {
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fav-item-meta {
+      font-size: 0.72em;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.5);
+    }
+    .fav-item-right { flex-shrink: 0; text-align: right; }
+    .fav-item-time {
+      font-weight: 700;
+      font-size: 0.9em;
+      letter-spacing: 0.06em;
+    }
+    .fav-item-countdown {
+      font-size: 0.72em;
+      letter-spacing: 0.06em;
+      color: #f5d800;
+      margin-top: 2px;
+    }
+
     /* ── Footer ── */
     footer {
       position: fixed;
@@ -208,6 +329,22 @@
     <a href="mapa.jpg" target="_blank" class="day-btn" style="font-size: clamp(0.85em, 3.5vw, 1.1em);">
       МАПА ФЕСТИВАЛЮ
     </a>
+
+    <button class="fav-btn" onclick="openFavs()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+      ОБРАНІ
+      <span class="fav-count" id="fav-count"></span>
+    </button>
+  </div>
+
+  <div class="fav-overlay" id="fav-overlay" onclick="closeFavsIfBg(event)">
+    <div class="fav-modal">
+      <div class="fav-modal-header">
+        <span class="fav-modal-title">Обрані артисти</span>
+        <button class="fav-close" onclick="closeFavs()">✕</button>
+      </div>
+      <div class="fav-list" id="fav-list"></div>
+    </div>
   </div>
 
   <footer>
@@ -222,9 +359,75 @@
   </footer>
 
   <script>
-    function toggle(id) {
-      document.getElementById(id).classList.toggle('open');
+    const YEAR = 2026;
+    const FAV_KEYS = { 1: `bpbf_fav_${YEAR}_day1`, 2: `bpbf_fav_${YEAR}_day2` };
+    const FESTIVAL_DATES = { 1: { month: 6, day: 13 }, 2: { month: 6, day: 14 } };
+
+    function loadAllFavs() {
+      const all = [];
+      [1, 2].forEach(d => {
+        try {
+          const items = JSON.parse(localStorage.getItem(FAV_KEYS[d]) || '[]');
+          items.forEach(f => all.push({ ...f, day: d }));
+        } catch {}
+      });
+      all.sort((a, b) => a.day - b.day || a.startMin - b.startMin);
+      return all;
     }
+
+    function getCountdown(item) {
+      const now = new Date();
+      const fd = FESTIVAL_DATES[item.day];
+      if (now.getMonth() + 1 !== fd.month || now.getDate() !== fd.day || now.getFullYear() !== YEAR) return null;
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      const diff = item.startMin - nowMin;
+      if (diff <= 0 || diff > 180) return null;
+      if (diff < 60) return `через ${diff} хв`;
+      const h = Math.floor(diff / 60), m = diff % 60;
+      return m > 0 ? `через ${h} год ${m} хв` : `через ${h} год`;
+    }
+
+    function updateFavCount() {
+      const count = loadAllFavs().length;
+      const el = document.getElementById('fav-count');
+      el.textContent = count;
+      el.classList.toggle('visible', count > 0);
+    }
+
+    function renderFavList() {
+      const items = loadAllFavs();
+      const list = document.getElementById('fav-list');
+      if (!items.length) {
+        list.innerHTML = '<div class="fav-empty">Ще нічого не обрано.<br>Натисни ♡ на артисті у розкладі.</div>';
+        return;
+      }
+      list.innerHTML = items.map(f => {
+        const countdown = getCountdown(f);
+        return `<div class="fav-item">
+          <div class="fav-item-left">
+            <div class="fav-item-name">${f.name}</div>
+            <div class="fav-item-meta">${f.stage} · ДЕНЬ ${f.day} · ${f.date}</div>
+          </div>
+          <div class="fav-item-right">
+            <div class="fav-item-time">${f.time}</div>
+            ${countdown ? `<div class="fav-item-countdown">${countdown}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function openFavs() {
+      renderFavList();
+      document.getElementById('fav-overlay').classList.add('open');
+    }
+    function closeFavs() {
+      document.getElementById('fav-overlay').classList.remove('open');
+    }
+    function closeFavsIfBg(e) {
+      if (e.target === document.getElementById('fav-overlay')) closeFavs();
+    }
+
+    document.addEventListener('DOMContentLoaded', updateFavCount);
   </script>
 </body>
 </html>
