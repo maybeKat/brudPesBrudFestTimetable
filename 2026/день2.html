@@ -613,7 +613,7 @@
 </div>
 <div class="artist-card" id="act-2-3" data-start="1065" data-end="1110" style="top:330px;height:90px">
   <span class="card-time">17:45</span>
-  <span class="card-name">XARAKTER</span>
+  <span class="card-name">SASHA PERVUKHIN</span>
   <span class="card-duration">45 хв</span>
 </div>
 <div class="artist-card" id="act-2-4" data-start="1110" data-end="1155" style="top:420px;height:90px">
@@ -803,7 +803,15 @@
       });
     }
 
+    // ── Schedule migration ──
+    function migrateKellerFavs() {
+      const favs = getFavs();
+      const filtered = favs.filter(f => !(f.id === 'act-2-3' && f.name === 'XARAKTER'));
+      if (filtered.length !== favs.length) saveFavs(filtered);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
+      migrateKellerFavs();
       if (isFestivalDay) {
         updateCurrentTimeLine();
         setInterval(updateCurrentTimeLine, 30000);
